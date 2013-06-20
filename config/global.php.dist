@@ -1,0 +1,13 @@
+<?php
+return array(
+	'sta' => array(
+	    /**
+	     * Configurações do php.ini que serão setadas assim que o módulo Sta for carregado.
+		'php-settings' => array(),
+
+		/**
+		 * Determina se deve registrar os tipos customizados para o Doctrine.
+		 */
+		'customDoctrineTypes' => true,
+	),
+);

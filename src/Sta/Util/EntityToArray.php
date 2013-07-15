@@ -43,18 +43,19 @@ class EntityToArray
 	/**
 	 * @param AbstractEntity|AbstractEntity[] $entity
 	 *
-	 * @param int $depth
+	 * @param array $options
+	 * 		Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
 	 *
 	 * @return array
 	 */
-	public function convert($entity, $depth = 0)
+	public function convert($entity, array $options = array())
 	{
 		if ($entity instanceof AbstractEntity) {
-			return $this->_convert($entity, $depth);
+			return $this->_convert($entity, $options);
 		} else {
 			$result = array();
 			foreach ($entity as $item) {
-				$result[] = $this->_convert($item, $depth);
+				$result[] = $this->_convert($item, $options);
 			}
 			return $result;
 		}
@@ -63,18 +64,59 @@ class EntityToArray
 	/**
 	 * @param AbstractEntity $entity
 	 *
-	 * @param $depth
-	 *
+	 * @param array $options
+	 * 		Opções disponiveis:<ul>
+	 * 			<li>depth: int - default 0 <br>
+	 * 				Define a profundidade que que devemos alcançar nos relacionamentos entre as classes.
+	 * 				Veja mais em {@link https://github.com/grandssistemas/sell/wiki/Parametro-depth}
+	 * 			</li>
+	 * 			<li>
+	 * 				doNotNameEntities: bool - default false <br>
+	 * 				Quando true cada entidade estara relacionada a um atributo cujo nome é igual ao nome da entidade.
+	 * 				Ex: abaixo temos uma entidade Produto, e o valor deste parâmetro é false.
+	 * <pre>
+	 * 	array(
+	 *		'id' => 106,
+	 *		'descricao' => 'Calça Masculina',
+	 * 		'unidadeMedida' => array(
+	 *			'id' => 15,
+	 *			'nome' => 'Unidade',
+	 *			'sigla' => 'UN',
+	 * 		),
+	 * 	);
+	 * </pre>
+	 * 				Agora, no exemplo abaixo, temos a mesma entidade exibida acima, porem o valor deste parametro é true.
+	 * <pre>
+	 * 	array(
+	 * 		'Produto' => array(
+	 *			'id' => 106 ,
+	 *			'descricao' => 'Calça Masculina',
+	 * 			'unidadeMedida' => array(
+	 * 				'UnidadeMedida' => array(
+	 *					'id' => 15,
+	 *					'nome' => 'Unidade',
+	 *					'sigla' => 'UN',
+	 * 				),
+	 * 			),
+	 * 		),
+	 * 	);
+	 * </pre>
+	 * 			</li>
+	 * </ul>
 	 * @return array
 	 */
-	private function _convert(AbstractEntity $entity, $depth)
+	private function _convert(AbstractEntity $entity, array $options = array())
 	{
+		
 		$em              = $this->em;
 		$entityClass     = get_class($entity);
 		$classMetadata   = $em->getClassMetadata($entityClass);
+		$regexp 		 = '`^.*' . preg_quote($classMetadata->namespace . '\\`');
+		$entityName		 = preg_replace($regexp, '', $entityClass);
 		$fieldMappings   = $classMetadata->fieldMappings;
 		$return          = array();
-
+		$doNotNameEntities = $this->_getOptions($options, 'doNotNameEntities', false);
+		
 		foreach ($fieldMappings as $fieldName => $fieldDefinition) {
 //			$reflection = new \ReflectionProperty($entityClass, $fieldName);
 //			$reflection->setAccessible(true);
@@ -83,7 +125,7 @@ class EntityToArray
 			$fieldValue = $entity->get($fieldName);
 			$type        = ($fieldDefinition && isset($fieldDefinition['type']) ? strtolower($fieldDefinition['type']) : null);
 
-			$return[$fieldName] = $this->_convertFieldValue($fieldValue, $type, $depth);
+			$return[$fieldName] = $this->_convertFieldValue($fieldValue, $type, $options);
 		}
 
 		$tmpAssocMappings = $classMetadata->associationMappings;
@@ -96,13 +138,16 @@ class EntityToArray
 				continue;
 			}
 			$fieldValue = $entity->get($fieldName);
-			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null, $depth);
+			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null, $options);
 		}
 
+		if ($doNotNameEntities == false) {
+			$return = array($entityName => $return);
+		}
 		return $return;
 	}
 
-	private function _convertFieldValue($fieldValue, $fieldType, $depth)
+	private function _convertFieldValue($fieldValue, $fieldType, array $options = array())
 	{
 		$config          = $this->serviceLocator->get('config');
 		$dateTimeFormats = $config['webapp']['datetime'];
@@ -126,7 +171,7 @@ class EntityToArray
 						$returnValue = $fieldValue->format($format);
 					}
 				} else {
-					$returnValue = $this->_convertSubEntities($fieldValue, $depth);
+					$returnValue = $this->_convertSubEntities($fieldValue, $options);
 				}
 			} else {
 				if (in_array($fieldType, array('string', 'text'))) {
@@ -141,15 +186,15 @@ class EntityToArray
 		return ($returnValue === null ? $fieldValue : $returnValue);
 	}
 
-	private function _convertSubEntities($subEntity, $depth)
+	private function _convertSubEntities($subEntity, array $options)
 	{
 		$returnValue = null;
 		if ($subEntity instanceof \Doctrine\ORM\Proxy\Proxy || $subEntity instanceof AbstractEntity) {
-			$returnValue = $this->_getDepthEntityOrJustId($subEntity, $depth);
+			$returnValue = $this->_getDepthEntityOrJustId($subEntity, $options);
 		} else if ($subEntity instanceof \Doctrine\Common\Collections\Collection) {
 				$returnValue = array();
 				foreach ($subEntity as $subitem) {
-					$returnValue[] = $this->_getDepthEntityOrJustId($subitem, $depth);
+					$returnValue[] = $this->_getDepthEntityOrJustId($subitem, $options);
 				}
 		} else {
 			// @TODO O que fazer nesta situação?
@@ -157,15 +202,29 @@ class EntityToArray
 		return $returnValue;
 	}
 
-	private function _getDepthEntityOrJustId(AbstractEntity $entity, $depth)
+	private function _getDepthEntityOrJustId(AbstractEntity $entity, array $options)
 	{
+		$depth = (int)$this->_getOptions($options, 'depth', 0);
 		if ($depth > 0) {
-			return $this->_convert($entity, $depth - 1);
+			$options['depth'] = $depth - 1;
+			return $this->_convert($entity, $options);
 		} else {
 			// Mesmo que a entidade seja uma instãncia de \Doctrine\ORM\Proxy\Proxy (Lazzy Load), podemos pegar o ID
 			// da entidade, sem que ela ja carregada do DB, visto que o ID já foi carregado quando o proxy foi criado.
 			return $entity->getId();
 		}
+	}
+
+	/**
+	 * @param array $options
+	 * @param string $optionName
+	 * @param mixed $default
+	 *
+	 * @return mixed
+	 */
+	private function _getOptions(array $options, $optionName, $default = null)
+	{
+		return (array_key_exists($optionName, $options) ? $options[$optionName] : $default);
 	}
 
 }

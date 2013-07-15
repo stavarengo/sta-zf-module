@@ -14,7 +14,7 @@ use Sta\Entity\AbstractEntity;
  * Convenience methods Sta plugins (@see \Zend\Mvc\Controller\AbstractController::__call):
  *
  * @method \Sta\Mvc\Controller\Plugin\RangeUnit rangeUnit()
- * @method \Sta\Mvc\Controller\Plugin\EntityToArray entityToArray($entity = null, $depth = 0)
+ * @method \Sta\Mvc\Controller\Plugin\EntityToArray entityToArray($entity = null, array $options = array())
  *
  *
  * Sobrescreve o retorno de alguns métodos que retornam tipos genérios, mas nós sabemos que tipos serão retornados.

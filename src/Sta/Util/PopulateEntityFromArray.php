@@ -22,18 +22,20 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 */
 	public $serviceManager;
 
-	public function __invoke(array $data, AbstractEntity $entity)
+	public function __invoke(array $data, AbstractEntity $entity, array $options = array())
 	{
-		$this->populate($data, $entity);
+		$this->populate($data, $entity, $options);
 	}
 
 	/**
 	 * @param array $data
 	 * @param AbstractEntity $entity
+	 * @param array $options
+	 * 		Veja as opções válidas em {@link \Sta\Util\PopulateEntityFromArray::_populate()}
 	 */
-	public function populate(array $data, AbstractEntity $entity)
+	public function populate(array $data, AbstractEntity $entity, array $options = array())
 	{
-		$this->_populate($data, $entity);
+		$this->_populate($data, $entity, $options);
 	}
 
 	/**
@@ -78,28 +80,33 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	}
 
 	/**
-	 * @param array $data
+	 * @param array $entityData
+	 * 		Os dados da entidade no formato array.
 	 * @param \Sta\Entity\AbstractEntity $entity
+	 * 		A instância da entidade que será populada.
+	 * @param array $options
+	 *		Ainda não aceita nenhuma opção. Foi adicionado este parâmetro para uso futuro.
 	 */
-	private function _populate(array $data, AbstractEntity $entity)
+	private function _populate(array $entityData, AbstractEntity $entity, array $options = array())
 	{
 		/** @var $entityManager EntityManager */
 		$entityManager = $this->serviceManager->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		$classMetadata = $entityManager->getClassMetadata(get_class($entity));
 		$fieldMappings = $classMetadata->fieldMappings;
 		foreach ($fieldMappings as $field => $fieldDefinition) {
-			if (array_key_exists($field, $data)) {
-				$this->_setValueToEntity($entity, $field, $fieldDefinition, $data[$field]);
+			if (array_key_exists($field, $entityData)) {
+				$this->_setValueToEntity($entity, $field, $fieldDefinition, $entityData[$field]);
 			}
 		}
 		$associationMappings = $classMetadata->associationMappings;
 		foreach ($associationMappings as $field => $fieldDefinition) {
-			if (array_key_exists($field, $data)) {
+			if (array_key_exists($field, $entityData)) {
 				$targetEntity = $fieldDefinition['targetEntity'];
+				$associationId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
 				$qb = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
 				$qb->select('a');
 				$qb->where('a.id = ?1');
-				$qb->setParameter(1, $data[$field]);
+				$qb->setParameter(1, $associationId);
 				$q                = $qb->getQuery();
 //				$q->setFetchMode($targetEntity, $field,  ClassMetadata::FETCH_EAGER);
 //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
@@ -131,5 +138,17 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 		}
 
 		$entity->set($fieldName, $value);
+	}
+	
+	private function _getAssociationId($entityData, $associationField, $targetEntityClassName, array $options)
+	{
+		$associationData = $entityData[$associationField];
+		$entityName      = basename($targetEntityClassName);
+		if (is_array($associationData) && array_key_exists($entityName, $associationData)) {
+			if (array_key_exists('id', $associationData[$entityName])) {
+				return $associationData[$entityName]['id'];
+			}
+		}
+		return $associationData;
 	}
 }

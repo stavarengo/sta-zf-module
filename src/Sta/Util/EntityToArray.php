@@ -71,7 +71,7 @@ class EntityToArray
 	 * 				Veja mais em {@link https://github.com/grandssistemas/sell/wiki/Parametro-depth}
 	 * 			</li>
 	 * 			<li>
-	 * 				doNotNameEntities: bool - default false <br>
+	 * 				noEntityName: bool - default false <br>
 	 * 				Quando true cada entidade estara relacionada a um atributo cujo nome é igual ao nome da entidade.
 	 * 				Ex: abaixo temos uma entidade Produto, e o valor deste parâmetro é false.
 	 * <pre>
@@ -115,7 +115,7 @@ class EntityToArray
 		$entityName		 = preg_replace($regexp, '', $entityClass);
 		$fieldMappings   = $classMetadata->fieldMappings;
 		$return          = array();
-		$doNotNameEntities = $this->_getOptions($options, 'doNotNameEntities', false);
+		$noEntityName = $this->_getOptions($options, 'noEntityName', false);
 		
 		foreach ($fieldMappings as $fieldName => $fieldDefinition) {
 //			$reflection = new \ReflectionProperty($entityClass, $fieldName);
@@ -141,7 +141,7 @@ class EntityToArray
 			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null, $options);
 		}
 
-		if ($doNotNameEntities == false) {
+		if ($noEntityName == false) {
 			$return = array($entityName => $return);
 		}
 		return $return;
@@ -211,7 +211,12 @@ class EntityToArray
 		} else {
 			// Mesmo que a entidade seja uma instãncia de \Doctrine\ORM\Proxy\Proxy (Lazzy Load), podemos pegar o ID
 			// da entidade, sem que ela ja carregada do DB, visto que o ID já foi carregado quando o proxy foi criado.
-			return $entity->getId();
+			if (isset($options['noEntityName']) && $options['noEntityName']) {
+				return $entity->getId();
+			} else {
+				$entityName = basename(get_class($entity));
+				return array($entityName => array('id' => $entity->getId()));
+			}
 		}
 	}
 

@@ -92,6 +92,7 @@ class EntityToArray
 	 *			'id' => 106 ,
 	 *			'descricao' => 'Calça Masculina',
 	 * 			'unidadeMedida' => array(
+	 * 				'_en' => 'UnidadeMedida',
 	 * 				'UnidadeMedida' => array(
 	 *					'id' => 15,
 	 *					'nome' => 'Unidade',
@@ -211,11 +212,11 @@ class EntityToArray
 		} else {
 			// Mesmo que a entidade seja uma instãncia de \Doctrine\ORM\Proxy\Proxy (Lazzy Load), podemos pegar o ID
 			// da entidade, sem que ela ja carregada do DB, visto que o ID já foi carregado quando o proxy foi criado.
-			if (isset($options['noEntityName']) && $options['noEntityName']) {
+			if ($this->_getOptions($options, 'noEntityName', false)) {
 				return $entity->getId();
 			} else {
 				$entityName = basename(get_class($entity));
-				return array($entityName => array('id' => $entity->getId()));
+				return array('_en' => $entityName, $entityName => array('id' => $entity->getId()));
 			}
 		}
 	}

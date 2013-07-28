@@ -1,6 +1,7 @@
 <?php
 namespace Sta\Entity;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Sta\Entity\Exception\InvalidArgument;
 
@@ -18,6 +19,14 @@ abstract class AbstractEntity
 	 */
 	protected $id;
 
+	/**
+	 * @return EntityManager
+	 */
+	public function getEntityManager()
+	{
+		return \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	}
+	
 	/**
 	 * Helper que retornar o valor de um atributo sem precisar usar os getters.
 	 *

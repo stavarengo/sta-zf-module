@@ -143,7 +143,7 @@ class EntityToArray
 		}
 
 		if ($noEntityName == false) {
-			$return = array($entityName => $return);
+			$return = array('_en' => $entityName, $entityName => $return);
 		}
 		return $return;
 	}
@@ -230,7 +230,13 @@ class EntityToArray
 	 */
 	private function _getOptions(array $options, $optionName, $default = null)
 	{
-		return (array_key_exists($optionName, $options) ? $options[$optionName] : $default);
+		if (array_key_exists($optionName, $options)) {
+			if ($optionName == 'depth' && $options['depth'] == 'Infinity') {
+				$options['depth'] = PHP_INT_MAX;
+			}
+			return $options[$optionName];
+		}
+		return $default;
 	}
 
 }

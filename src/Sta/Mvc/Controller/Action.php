@@ -47,4 +47,15 @@ abstract class Action
 	{
 		return $this->controller;
 	}
+
+	/**
+	 * @param string $param
+	 * @param mixed $default
+	 *
+	 * @return mixed|\Zend\Mvc\Controller\Plugin\Params
+	 */
+	public function params($param = null, $default = null)
+	{
+		return $this->getController()->params($param, $default);
+	}
 }

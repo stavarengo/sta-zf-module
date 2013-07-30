@@ -36,7 +36,7 @@ class GetConfiguredResponse extends AbstractPlugin
 		$headers  = $response->getHeaders();
 		if ($statusCode >= 200 && $statusCode <= 299) {
 			$contentType = 'application/json; charset=utf-8';
-			$body        = ($body ? \Zend\Json\Json::encode($body) : $body);
+			$body        = ($body !== null ? \Zend\Json\Json::encode($body) : $body);
 			if ($config['webapp']['isDebug']) {
 				$body = \Zend\Json\Json::prettyPrint($body, array("indent" => "    "));
 			}

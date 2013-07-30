@@ -21,6 +21,9 @@ abstract class Action
 		$controllerNs = str_replace(DIRECTORY_SEPARATOR, '\\', $controllerNs);
 		$actionFqcn = "$controllerNs\\Action\\$controllerName\\$actionName";
 		/** @var $action Action */
+		if (!class_exists($actionFqcn)) {
+			throw new Exception('Classe "' . $actionFqcn . '" não existe.');
+		}
 		$action = new $actionFqcn();
 		$action->setController($controller);
 		return $action->execute();

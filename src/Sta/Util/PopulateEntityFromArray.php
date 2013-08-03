@@ -127,11 +127,31 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 				$config        = $this->serviceManager->getServiceLocator()->get('config');
 				$defTz         = $config['webapp']['datetime']['deftault-timezone'];
 				$fieldFormat   = $config['webapp']['datetime'][$fieldType];
+				
 				$originalValue = $value;
 				if (!($value = \DateTime::createFromFormat($fieldFormat, $value))) {
-					throw new PopulateEntityFromArrayException('Formato de data/hora inválido para o atributo "'
-					. $fieldName . '". Valo recebido: "' . $originalValue . '". Formato esperado: "' . $fieldFormat
-					. '".');
+					// Se falhou ao converter a data, talvez seja pq enviou um formato completo de data para quando o 
+					// campo aceita apenas parte da data.
+					// Ex: enviou data e hroa quando o campo aceita apenas data ou hora.
+					// Neste caso abaixo damos mais uma chance tentando descobrir se foi isso que aconteceu e usando
+					// a formatação mais adequada para o valor recebido.
+					$agora             = new \DateTime('now', $defTz);
+					$dateTimeStrLength = strlen($agora->format($config['webapp']['datetime']['datetime']));
+					$lengthDaDataRecebida = strlen($originalValue);
+					if ($lengthDaDataRecebida == $dateTimeStrLength) {
+						if ($fieldType == 'time' || $fieldType == 'date') {
+							// o campo aceita apenas data ou hora, mas recebemos um valor com a mesma qtd de chars
+							// usado para campos que aceitam data e hora. Talvez, o valor recebido soh esteja no fomato
+							// completo quando deveria estar no formato menor, como descrito no comentario acima.
+							// Vamos dar mais uma chance!
+							$value = \DateTime::createFromFormat($config['webapp']['datetime']['datetime'], $originalValue);
+						}
+					}
+					if (!$value) {
+						throw new PopulateEntityFromArrayException('Formato de data/hora inválido para o atributo "'
+							. $fieldName . '". Valo recebido: "' . $originalValue . '". Formato esperado: "' . $fieldFormat
+							. '".');
+					}
 				}
 				$value->setTimezone($defTz);
 			}

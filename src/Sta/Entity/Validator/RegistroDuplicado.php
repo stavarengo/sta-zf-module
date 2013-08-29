@@ -61,7 +61,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		}
 
 		$qb->setMaxResults(1);
-		echo "\n{$qb}\n";
+		
 		if ($qb->getQuery()->getOneOrNullResult() !== null) {
 			$this->error(self::ENTIDADE_DUPLICADA);
 			return false;

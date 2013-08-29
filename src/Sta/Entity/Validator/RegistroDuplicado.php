@@ -21,7 +21,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	/**
 	 * @param RegistroDuplicadoValue $value
 	 *
-	 * @throws Exception
+	 * @throws InvalidArgument
 	 * @return bool
 	 */
 	public function isValid($value)
@@ -30,35 +30,38 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			throw new \Sta\Entity\Validator\InvalidArgument();
 		}
 
-		$entity           = $value->entity;
-		$entityClass      = get_class($entity);
 		/** @var $em EntityManager */
 		$em               = \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$attributeName = $value->attribute;
-		$attributeValue = $entity->get($attributeName);
-
-		if ($attributeValue instanceof AbstractEntity) {
-			if (!$em->getRepository(get_class($attributeValue))->find((int)$attributeValue->getId())) {
-				// Está verificando a duplicidade de valores em uma coluna FK (que aponta para outra tabela),
-				// porém o registro da outra tabela ainda não existe, então com certeza esta coluna não está duplicada.
-				// O regsitro da outra tabela pode não existir quando ainda não foi invocado EntityManager::flush().
-				return true;
-			}
-		}
-
+		$entity           = $value->entity;
+		$entityClass      = get_class($entity);
 		$entityRepository = $em->getRepository($entityClass);
 		$qb = $entityRepository->createQueryBuilder('a');
 
-		$qb->where("a.$attributeName = :attributeValue");
-		$qb->setParameter('attributeValue', $attributeValue);
+		$count = 0;
+		foreach ($value->attributes as $attributeName) {
+			$attributeValue = $entity->get($attributeName);
+
+			if ($attributeValue instanceof AbstractEntity) {
+				if (!$em->getRepository(get_class($attributeValue))->find((int)$attributeValue->getId())) {
+					// Está verificando a duplicidade de valores em uma coluna FK (que aponta para outra tabela),
+					// porém o registro da outra tabela ainda não existe, então com certesa esta coluna não está duplicada.
+					// O regsitro da outra tabela pode não existir quando ainda não foi invocado EntityManager::flush().
+					return true;
+				}
+			}
+
+			$qb->andWhere("a." . $attributeName . " = :attributeValue" . (++$count));
+			$qb->setParameter('attributeValue' . $count, $attributeValue);
+		}
 
 		if ($entity->getId()) {
-			$qb->where('a.id <> :id');
+			echo "\nMeu id " . $entity->getId() . "\n";
+			$qb->andWhere('a.id <> :id');
 			$qb->setParameter('id', $entity->getId());
 		}
 
 		$qb->setMaxResults(1);
-
+		echo "\n{$qb}\n";
 		if ($qb->getQuery()->getOneOrNullResult() !== null) {
 			$this->error(self::ENTIDADE_DUPLICADA);
 			return false;

@@ -12,15 +12,19 @@ class RegistroDuplicadoValue
 	 */
 	public $entity;
 	/**
-	 * O nome do atributo que será usado para comparação com as outras entidades.
-	 * Se existir outra entidade que tenha o mesmo valor neste atributo, então a entidade será considerada duplicada.
-	 * @var string
+	 * Um array com os nomes dos atributos que serão usados para comparação com as outras entidades.
+	 * Se existir outra entidade que tenha os mesmos valores nestes atributos, então a entidade será considerada duplicada.
+	 * @var array
 	 */
-	public $attribute;
+	public $attributes;
 
-	function __construct(AbstractEntity $entity, $attribute)
+	/**
+	 * @param AbstractEntity $entity
+	 * @param string[]|string $attributes
+	 */
+	function __construct(AbstractEntity $entity, $attributes)
 	{
-		$this->attribute = $attribute;
+		$this->attributes = (array)$attributes;
 		$this->entity    = $entity;
 	}
 

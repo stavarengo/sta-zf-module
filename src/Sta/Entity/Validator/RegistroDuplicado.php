@@ -27,7 +27,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	public function isValid($value)
 	{
 		if (!$value instanceof RegistroDuplicadoValue) {
-			throw new \Sta\Entity\Validator\Exception();
+			throw new \Sta\Entity\Validator\InvalidArgument();
 		}
 
 		$entity           = $value->entity;

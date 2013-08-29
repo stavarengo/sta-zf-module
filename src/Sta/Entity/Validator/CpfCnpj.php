@@ -36,7 +36,9 @@ class CpfCnpj extends AbstractValidator
 	 */
 	public function isValid($value)
 	{
-		if (\Sta\Module::isLocal()) {
+		$config = \Sta\Module::getServiceLocator()->get('config');
+		$isLocal = $config['sta']['isLocal'];
+		if ($isLocal()) {
 			return true;
 		}
 		if (!is_string($value)) {

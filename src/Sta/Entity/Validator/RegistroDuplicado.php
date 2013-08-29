@@ -55,7 +55,6 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		}
 
 		if ($entity->getId()) {
-			echo "\nMeu id " . $entity->getId() . "\n";
 			$qb->andWhere('a.id <> :id');
 			$qb->setParameter('id', $entity->getId());
 		}

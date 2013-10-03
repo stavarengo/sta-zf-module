@@ -8,6 +8,7 @@ return array(
 			'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
 			'rangeUnit' => 'Sta\Mvc\Controller\Plugin\RangeUnit',
 			'getConfiguredResponse' => 'Sta\Mvc\Controller\Plugin\GetConfiguredResponse',
+			'getRequestContent' => 'Sta\Mvc\Controller\Plugin\GetRequestContent',
 		),
 	),
 	'view_helpers' => array(

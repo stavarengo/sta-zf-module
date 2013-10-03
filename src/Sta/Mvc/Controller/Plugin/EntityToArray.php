@@ -16,7 +16,7 @@ class EntityToArray extends AbstractPlugin
 	 * @param AbstractEntity|AbstractEntity[] $entity
 	 *
 	 * @param array $options
-	 * 		Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
+	 * 		Veja as opÃ§Ãµes vÃ¡lidas em {@link \Sta\Util\EntityToArray::_convert()}
 	 *
 	 * @return array
 	 */
@@ -29,7 +29,7 @@ class EntityToArray extends AbstractPlugin
 	
 	public function __invoke($entity = null, array $options = array())
 	{
-		if ($entity) {
+		if ($entity !== null) {
 			return $this->convert($entity, $options);
 		} else {
 			return $this;

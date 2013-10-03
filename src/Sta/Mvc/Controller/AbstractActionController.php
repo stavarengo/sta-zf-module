@@ -22,6 +22,7 @@ use Sta\Entity\AbstractEntity;
  * @method \Zend\Http\PhpEnvironment\Request getRequest()
  * @method \Zend\Http\PhpEnvironment\Response getResponse()
  * @method \Zend\Http\PhpEnvironment\Response getConfiguredResponse($statusCode, $body = null, array $responseHeaders = array())
+ * @method array getRequestContent()
  * @method populateEntityFromArray(array $data, AbstractEntity $entity, array $options = array())
  *
  * @author: Stavarengo

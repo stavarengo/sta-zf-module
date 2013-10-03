@@ -98,6 +98,10 @@ class GetConfiguredResponse extends AbstractPlugin
 //					$writter->writeAttribute('xsi:nil', 'true');
 					$writter->writeAttribute('nil', 'true');
 					$writter->endElement();
+				} else if ($value === true) {
+					$writter->writeElement($elementName, '1');
+				} else if ($value === false) {
+					$writter->writeElement($elementName, '0');
 				} else if ($value === '') {
 					$writter->writeElement($elementName);
 				} else {

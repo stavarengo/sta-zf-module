@@ -1,5 +1,5 @@
 <?php
-namespace Sta\Mvc\Controller\Plugin\RangeUnit;
+namespace Sta\Util\RangeUnit;
 
 /**
  * @author: Stavarengo

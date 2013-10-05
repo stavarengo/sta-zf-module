@@ -67,12 +67,13 @@ abstract class Query extends Action
 	{
 		$rowCount = $this->count();
 
-		if (!$this->getController()->rangeUnit()->isSatisfactory($rowCount, $this->rangeUnit)) {
+		$rangeUnitObj = $this->getController()->rangeUnit($rowCount, $this->rangeUnit);
+		if (!$rangeUnitObj->isSatisfactory()) {
 			//416 - Requested range not satisfiable
 			$responseHeaders = array('Content-Range' => $this->rangeUnit . ' */' . ($rowCount - 1));
 			return $this->getController()->getConfiguredResponse(416, null, $responseHeaders);
 		}
-		$range = $this->getController()->rangeUnit()->get($rowCount);
+		$range = $rangeUnitObj->get($rowCount);
 
 		if ($range->getLength() > $this->maxLength) {
 			//413 - Request entity too large

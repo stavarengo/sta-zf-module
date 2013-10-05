@@ -13,7 +13,7 @@ use Sta\Entity\AbstractEntity;
  *
  * Convenience methods Sta plugins (@see \Zend\Mvc\Controller\AbstractController::__call):
  *
- * @method \Sta\Mvc\Controller\Plugin\RangeUnit rangeUnit()
+ * @method \Sta\Util\RangeUnit rangeUnit($maxLength, $unit = 'items', \Zend\Http\Header\HeaderInterface $rawHeader = null, $acceptQueryParams = true)
  * @method \Sta\Mvc\Controller\Plugin\EntityToArray entityToArray($entity = null, array $options = array())
  *
  *

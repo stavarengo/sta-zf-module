@@ -51,6 +51,9 @@ class GetConfiguredResponse extends AbstractPlugin
 		}
 
 		$headers->addHeaderLine('Content-type', $contentType);
+//		$headers->addHeaderLine('Cache-Control', 'max-age=0, no-cache, no-store, must-revalidate');
+//		$headers->addHeaderLine('Pragma', "no-cache");
+//		$headers->addHeaderLine('Expires', "Wed, 11 Jan 1984 05:00:00 GMT");
 		foreach ($responseHeaders as $headerName => $headerContent) {
 			$headers->addHeaderLine($headerName, $headerContent);
 		}

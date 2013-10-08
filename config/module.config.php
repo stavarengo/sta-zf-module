@@ -9,6 +9,7 @@ return array(
 			'rangeUnit' => 'Sta\Mvc\Controller\Plugin\RangeUnit',
 			'getConfiguredResponse' => 'Sta\Mvc\Controller\Plugin\GetConfiguredResponse',
 			'getRequestContent' => 'Sta\Mvc\Controller\Plugin\GetRequestContent',
+			'cache' => 'Sta\Mvc\Controller\Plugin\Cache',
 		),
 	),
 	'view_helpers' => array(

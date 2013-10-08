@@ -24,6 +24,7 @@ use Sta\Entity\AbstractEntity;
  * @method \Zend\Http\PhpEnvironment\Response getConfiguredResponse($statusCode, $body = null, array $responseHeaders = array())
  * @method array getRequestContent()
  * @method populateEntityFromArray(array $data, AbstractEntity $entity, array $options = array())
+ * @method \Sta\Mvc\Controller\Plugin\Cache cache()
  *
  * @author: Stavarengo
  */

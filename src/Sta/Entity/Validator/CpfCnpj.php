@@ -149,47 +149,64 @@ class CpfCnpj extends AbstractValidator
 		if (strlen($cnpj) <> 14) return false;
 		if (preg_match('/[ [:alpha:]]/', $cnpj)) return false;
 
-		$soma = 0;
+		$dv = self::getCnpjDv(substr($cnpj, 0, 12));
 
-		$soma += ($cnpj[0] * 5);
-		$soma += ($cnpj[1] * 4);
-		$soma += ($cnpj[2] * 3);
-		$soma += ($cnpj[3] * 2);
-		$soma += ($cnpj[4] * 9);
-		$soma += ($cnpj[5] * 8);
-		$soma += ($cnpj[6] * 7);
-		$soma += ($cnpj[7] * 6);
-		$soma += ($cnpj[8] * 5);
-		$soma += ($cnpj[9] * 4);
-		$soma += ($cnpj[10] * 3);
-		$soma += ($cnpj[11] * 2);
-
-		$d1 = $soma % 11;
-		$d1 = $d1 < 2 ? 0 : 11 - $d1;
-
-		$soma = 0;
-		$soma += ($cnpj[0] * 6);
-		$soma += ($cnpj[1] * 5);
-		$soma += ($cnpj[2] * 4);
-		$soma += ($cnpj[3] * 3);
-		$soma += ($cnpj[4] * 2);
-		$soma += ($cnpj[5] * 9);
-		$soma += ($cnpj[6] * 8);
-		$soma += ($cnpj[7] * 7);
-		$soma += ($cnpj[8] * 6);
-		$soma += ($cnpj[9] * 5);
-		$soma += ($cnpj[10] * 4);
-		$soma += ($cnpj[11] * 3);
-		$soma += ($cnpj[12] * 2);
-
-
-		$d2 = $soma % 11;
-		$d2 = $d2 < 2 ? 0 : 11 - $d2;
-
+		if (!$dv || strlen($dv) != 2) {
+			return false;
+		}
+		
+		$d1 = $dv[0];
+		$d2 = $dv[1];
+		
 		if ($cnpj[12] == $d1 && $cnpj[13] == $d2) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public static function getCnpjDv($cnpjSemDv)
+	{
+
+		if (strlen($cnpjSemDv) <> 12) return '';
+
+		$soma = 0;
+
+		$soma += ($cnpjSemDv[0] * 5);
+		$soma += ($cnpjSemDv[1] * 4);
+		$soma += ($cnpjSemDv[2] * 3);
+		$soma += ($cnpjSemDv[3] * 2);
+		$soma += ($cnpjSemDv[4] * 9);
+		$soma += ($cnpjSemDv[5] * 8);
+		$soma += ($cnpjSemDv[6] * 7);
+		$soma += ($cnpjSemDv[7] * 6);
+		$soma += ($cnpjSemDv[8] * 5);
+		$soma += ($cnpjSemDv[9] * 4);
+		$soma += ($cnpjSemDv[10] * 3);
+		$soma += ($cnpjSemDv[11] * 2);
+
+		$d1 = $soma % 11;
+		$d1 = $d1 < 2 ? 0 : 11 - $d1;
+
+		$soma = 0;
+		$soma += ($cnpjSemDv[0] * 6);
+		$soma += ($cnpjSemDv[1] * 5);
+		$soma += ($cnpjSemDv[2] * 4);
+		$soma += ($cnpjSemDv[3] * 3);
+		$soma += ($cnpjSemDv[4] * 2);
+		$soma += ($cnpjSemDv[5] * 9);
+		$soma += ($cnpjSemDv[6] * 8);
+		$soma += ($cnpjSemDv[7] * 7);
+		$soma += ($cnpjSemDv[8] * 6);
+		$soma += ($cnpjSemDv[9] * 5);
+		$soma += ($cnpjSemDv[10] * 4);
+		$soma += ($cnpjSemDv[11] * 3);
+		$soma += ($d1 * 2);
+
+
+		$d2 = $soma % 11;
+		$d2 = $d2 < 2 ? 0 : 11 - $d2;
+
+		return $d1 . $d2;
 	}
 }

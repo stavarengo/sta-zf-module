@@ -231,7 +231,7 @@ class EntityToArray
 	private function _getOptions(array $options, $optionName, $default = null)
 	{
 		if (array_key_exists($optionName, $options)) {
-			if ($optionName == 'depth' && $options['depth'] == 'Infinity') {
+			if ($optionName == 'depth' && $options['depth'] === 'Infinity') {
 				$options['depth'] = PHP_INT_MAX;
 			}
 			return $options[$optionName];

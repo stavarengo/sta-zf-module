@@ -25,6 +25,7 @@ use Sta\Entity\AbstractEntity;
  * @method array getRequestContent()
  * @method populateEntityFromArray(array $data, AbstractEntity $entity, array $options = array())
  * @method \Sta\Mvc\Controller\Plugin\Cache cache()
+ * @method \App\Entity\Usuario currUser()
  *
  * @author: Stavarengo
  */

@@ -16,18 +16,23 @@ class RequiredField extends AbstractValidator
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::REQUIRED_FIELD => 'O campo "%field%" é necessário e não pode ser vazio.',
+		self::REQUIRED_FIELD => 'O atributo "%entityName%::%field%" é necessário e não pode ser vazio.',
 	);
 	/**
 	 * @var array
 	 */
 	protected $messageVariables = array(
-		'field' => 'field',
+		'field'      => 'field',
+		'entityName' => 'entityName',
 	);
 	/**
 	 * @var string
 	 */
 	protected $field;
+	/**
+	 * @var string
+	 */
+	public $entityName;
 
 	public function isValid($value)
 	{
@@ -40,7 +45,8 @@ class RequiredField extends AbstractValidator
 		foreach ($value->attributes as $attributeName) {
 			$attributeValue = $entity->get($attributeName);
 			if (!$notEmpty->isValid($attributeValue)) {
-				$this->field = $attributeName;
+				$this->entityName = get_class($entity);
+				$this->field      = $attributeName;
 				$this->error(self::REQUIRED_FIELD);
 				return false;
 			}

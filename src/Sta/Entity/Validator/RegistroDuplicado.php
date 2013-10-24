@@ -259,6 +259,12 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 
 	private function pertenceAoCompartilhamento(AbstractEntity $otherEntity)
 	{
+		if (!$this->annoWithCompany) {
+			// se esta empresa não permite compartilhamentos, nos retornamos true, pq qualquer registro é acessado
+			// entre todas as empresas existentes.
+			return true;
+		}
+		
 		if (count($this->idDasEmpresasCompartilhando)) {
 			/** @var $emp Empresa */
 			$emp = $otherEntity->get($this->annoWithCompany->attrName);

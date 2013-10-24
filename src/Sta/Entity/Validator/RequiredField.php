@@ -44,7 +44,8 @@ class RequiredField extends AbstractValidator
 		$notEmpty = new NotEmpty();
 		foreach ($value->attributes as $attributeName) {
 			$attributeValue = $entity->get($attributeName);
-			if (!$notEmpty->isValid($attributeValue)) {
+			$isValid = $notEmpty->isValid($attributeValue);
+			if (!$isValid && $isValid !== false) {
 				$this->entityName = get_class($entity);
 				$this->field      = $attributeName;
 				$this->error(self::REQUIRED_FIELD);

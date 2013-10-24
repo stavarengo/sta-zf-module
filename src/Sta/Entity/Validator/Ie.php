@@ -41,6 +41,12 @@ class Ie extends AbstractValidator
 			throw new InvalidArgument();
 		}
 
+		$conf          = \Sta\Module::getServiceLocator()->get('Configuration');
+		$staConf       = $conf['sta'];
+		if ($staConf['isLocal']()) {
+			return true;
+		}
+		
 		$ie = $value->ie;
 		$uf = $value->uf;
 

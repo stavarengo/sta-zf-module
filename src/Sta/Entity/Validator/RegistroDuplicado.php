@@ -1,6 +1,11 @@
 <?php
 namespace Sta\Entity\Validator;
 
+use App\Entity\Annotation\WithCompanyOwner;
+use App\Entity\CompartilhamentoEmpresa;
+use App\Entity\Empresa;
+use App\Model\Compartilhamentos;
+use App\Model\CompartilhamentosEmpresas;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Sta\Entity\AbstractEntity;
@@ -9,18 +14,51 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 {
 
 	const ENTIDADE_DUPLICADA = 'entidadeDuplicada';
+	const ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA = 'entidade_duplicada_sem_empresa_proprietaria';
 	/**
 	 * Validation failure message template definitions
 	 *
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::ENTIDADE_DUPLICADA => "Registro duplicado",
+		self::ENTIDADE_DUPLICADA => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas: %empresasConsideradas%',
+		self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas todas as empresas (entidade não permite compartilhamento).',
 	);
 	/**
 	 * @var RegistroDuplicadoValue
 	 */
 	protected $value;
+	/**
+	 * @var array
+	 */
+	protected $messageVariables = array(
+		'valores'              => 'valores',
+		'entityName'           => 'entityName',
+		'empresasConsideradas' => 'empresasConsideradas',
+	);
+	/**
+	 * @var string
+	 */
+	protected $valores;
+	/**
+	 * @var string
+	 */
+	protected $empresasConsideradas;
+	/**
+	 * @var string
+	 */
+	protected $entityName;
+	/**
+	 * Usado apenas quando a entidade validada foi anotada com {@link \App\Entity\Annotation\WithCompanyOwner}.
+	 * Deve armazenar o ID das empresas que compartilham esta entidade, iclusive o ID da empresa da empresa
+	 * relacionada com a entidade validada.
+	 * @var array
+	 */
+	protected $idDasEmpresasCompartilhando;
+	/**
+	 * @var WithCompanyOwner
+	 */
+	private $annoWithCompany;
 	/**
 	 * @var $em EntityManager
 	 */
@@ -50,6 +88,38 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		$this->value       = $value;
 		$this->entity      = $value->entity;
 		$this->entityClass = get_class($this->entity);
+		$this->entityName  = $this->entityClass;
+
+		$refClass                          = \Sta\ReflectionClass::factory($value->entity);
+		$this->annoWithCompany             = $refClass->getClassAnnotation('App\Entity\Annotation\WithCompanyOwner');
+		$this->idDasEmpresasCompartilhando = array();
+		$empresasConsideradas              = array();
+		if ($this->annoWithCompany) {
+			/** @var $modelCompartilhamentos Compartilhamentos */
+			$modelCompartilhamentos = \Sta\Module::getServiceLocator()->get('Model\Compartilhamentos');
+			/** @var $modelCompartilhamentosEmpresas CompartilhamentosEmpresas */
+			$modelCompartilhamentosEmpresas = \Sta\Module::getServiceLocator()->get('Model\CompartilhamentosEmpresas');
+
+			$compartilhamento                = $modelCompartilhamentos->byEntityName($this->entityClass);
+			$empresaProprietaria                 = $value->entity->get($this->annoWithCompany->attrName);
+			$empresasQueCompartilhamEstaEntidade = $modelCompartilhamentosEmpresas->getCompaniesThatShareThisEntityWithMe($empresaProprietaria, $this->entityClass);
+			/** @var $row Empresa */
+			foreach ($empresasQueCompartilhamEstaEntidade as $row) {
+				$this->idDasEmpresasCompartilhando[] = $row->getId();
+				$empresasConsideradas[]              = $row->getId() . '-' . $row->getPessoa()->getFantasiaOuRazao();
+			}
+		}
+		$this->empresasConsideradas = implode(', ', $empresasConsideradas);
+
+		$valores = array();
+		foreach ($this->value->attributes as $attributeName) {
+			$attributeValue = $this->entity->get($attributeName);
+			if ($attributeValue instanceof AbstractEntity) {
+				$attributeValue = $attributeValue->getId();
+			}
+			$valores[] = "'$attributeName'='$attributeValue'";
+		}
+		$this->valores = implode(', ', $valores);
 
 		return $this->chekInsertionScheduled() && $this->checkDatabase();
 
@@ -91,13 +161,13 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 					// @TODO Aprimorar a comparacao de campos dada/hora
 					// @TODO Aprimorar a comparacao de campos cujo valor é um objeto, mas não instancia de AbstractEntity
 					if ($attributeValue instanceof AbstractEntity) {
-						$estaDuplicado = ($attributeValue === $otherEntityAttrValue);
+						$estaDuplicado = ($attributeValue === $otherEntityAttrValue && $this->pertenceAoCompartilhamento($sei));
 					} else if ($attributeValue == $otherEntityAttrValue) {
-						$estaDuplicado = true;
+						$estaDuplicado =  $this->pertenceAoCompartilhamento($sei);
 					} else {
 						$estaDuplicado = false;
 					}
-					
+
 					if (!$estaDuplicado) {
 						// Se pelo menos um dos atributos testados não estiver duplicado, então não podemos considerar
 						// a entidade como duplicada, e por isso nem precisamos continuar verificando os outros atributos.
@@ -106,7 +176,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 				}
 
 				if ($estaDuplicado) {
-					$this->error(self::ENTIDADE_DUPLICADA);
+					$this->errorEntidadeDuplicada();
 					return false;
 				}
 			}
@@ -140,7 +210,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			$qb->setParameter('attributeValue' . $count, $attributeValue);
 		}
 
-		
+
 		$notInIds = array();
 		if ($this->entity->getId()) {
 			$notInIds[] = $this->entity->getId();
@@ -165,14 +235,50 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			$qb->setParameter('id', $notInIds);
 		}
 
+		$ownerCompanyIds = $this->idDasEmpresasCompartilhando;
+		if ($ownerCompanyIds) {
+			$ownerCompanyAttr = $this->annoWithCompany->attrName;
+			if (count($ownerCompanyIds) == 1){
+				$qb->andWhere($qb->expr()->eq("a.$ownerCompanyAttr", ':ownerCompany'));
+				$ownerCompanyIds = reset($ownerCompanyIds);
+			} else {
+				$qb->andWhere($qb->expr()->in("a.$ownerCompanyAttr", ':ownerCompany'));
+			}
+			$qb->setParameter('ownerCompany', $ownerCompanyIds);
+		}
+		
 		$qb->setMaxResults(1);
 
 		if ($qb->getQuery()->getOneOrNullResult() !== null) {
-			$this->error(self::ENTIDADE_DUPLICADA);
+			$this->errorEntidadeDuplicada();
 			return false;
 		}
 
 		return true;
 	}
-	
+
+	private function pertenceAoCompartilhamento(AbstractEntity $otherEntity)
+	{
+		if (count($this->idDasEmpresasCompartilhando)) {
+			/** @var $emp Empresa */
+			$emp = $otherEntity->get($this->annoWithCompany->attrName);
+			if (in_array($emp->getId(), $this->idDasEmpresasCompartilhando)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function errorEntidadeDuplicada()
+	{
+		if ($this->annoWithCompany) {
+			$this->error(self::ENTIDADE_DUPLICADA);
+		} else {
+			$this->error(self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA);
+		}
+	}
+
 }

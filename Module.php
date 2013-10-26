@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Type;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 
 class Module implements Feature\AutoloaderProviderInterface,
 						Feature\ConfigProviderInterface,
@@ -73,6 +74,11 @@ class Module implements Feature\AutoloaderProviderInterface,
 				ini_set($name, $value);
 			}
 		}
+
+		$e->getApplication()->getEventManager()->attach(array(MvcEvent::EVENT_DISPATCH_ERROR, MvcEvent::EVENT_RENDER_ERROR), function(MvcEvent $e) {
+			$e->getViewModel()->ocorreuUmErro = true;
+			$e->getResponse()->getHeaders()->addHeaderLine('Content-type', 'text/html; charset=utf-8');
+		});
 
 		// Esta função habilita o uso de layouts específicos por módulos.
 		// Se dentro do array de configuração existir uma entrada 'modules_layouts' e dentro desta entrada exstir

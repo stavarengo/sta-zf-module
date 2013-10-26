@@ -20,6 +20,9 @@ return array(
 		),
 	),
 	'service_manager' => array(
+		'invokables' => array(
+			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponse', 
+		),
 		'aliases' => array(
 			'Em' => 'Doctrine\ORM\EntityManager',
 		),

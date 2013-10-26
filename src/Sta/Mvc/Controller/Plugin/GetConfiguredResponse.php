@@ -3,114 +3,47 @@
 namespace Sta\Mvc\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * @author: Stavarengo
  */
-class GetConfiguredResponse extends AbstractPlugin
+class GetConfiguredResponse extends AbstractPlugin implements ServiceLocatorAwareInterface
 {
+
+	/**
+	 * @var \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+	private $serviceLocator;
 
 	public function __invoke($statusCode, $body = null, array $responseHeaders = array())
 	{
-		return $this->getConfiguredResponse($statusCode, $body, $responseHeaders);
+		/** @var $getConfiguredResponse \Sta\Util\GetConfiguredResponse */
+		$getConfiguredResponse = $this->getServiceLocator()->getServiceLocator()->get('Sta\Util\GetConfiguredResponse');
+		$controller            = $this->getController();
+		$response              = $controller->getResponse();
+		$format                = $controller->getParam('format');
+		return $getConfiguredResponse->getConfiguredResponse($response, $statusCode, $body, $format, $responseHeaders);
 	}
 
 	/**
-	 * Configura a resposta que será retornada.
+	 * Set service locator
 	 *
-	 * @param int $statusCode
-	 *        Código HTTP de resposta.
-	 *
-	 * @param mixed $body
-	 *        Opcional. Corpo da resposta.
-	 *
-	 * @param array $responseHeaders
-	 *        Opcional. Cabeçalhos HTTP da resposta.
-	 *
-	 * @return \Zend\Http\PhpEnvironment\Response
+	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
 	 */
-	public function getConfiguredResponse($statusCode, $body = null, array $responseHeaders = array())
+	public function setServiceLocator(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
 	{
-		$response = $this->getController()->getResponse();
-		$config   = $this->getController()->getServiceLocator()->get('config');
-		$isDebug  = $config['webapp']['isDebug'];
-		$headers  = $response->getHeaders();
-		if ($statusCode >= 200 && $statusCode <= 299) {
-			if ($this->getController()->getParam('format') == 'xml') {
-				$contentType = 'text/xml; charset=utf-8';
-				$body        = $this->arrayToXml($body, $isDebug)->flush();
-			} else {
-				$contentType = 'application/json; charset=utf-8';
-				$body        = \Zend\Json\Json::encode($body);
-				if ($isDebug) {
-					$body = \Zend\Json\Json::prettyPrint($body, array("indent" => "    "));
-				}
-			}
-		} else {
-			$contentType = 'text/html; charset=utf-8';
-		}
-
-		$headers->addHeaderLine('Content-type', $contentType);
-//		$headers->addHeaderLine('Cache-Control', 'max-age=0, no-cache, no-store, must-revalidate');
-//		$headers->addHeaderLine('Pragma', "no-cache");
-//		$headers->addHeaderLine('Expires', "Wed, 11 Jan 1984 05:00:00 GMT");
-		foreach ($responseHeaders as $headerName => $headerContent) {
-			$headers->addHeaderLine($headerName, $headerContent);
-		}
-		$response->setStatusCode($statusCode);
-		$response->setContent($body);
-
-		return $response;
+		$this->serviceLocator = $serviceLocator;
 	}
 
-	private function arrayToXml($array, $isDebug)
+	/**
+	 * Get service locator
+	 *
+	 * @return \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+	public function getServiceLocator()
 	{
-		$writer = new \XMLWriter();
-		$writer->openMemory();
-		$writer->setIndent($isDebug);
-		if ($isDebug) {
-			$writer->setIndentString('   ');
-		} else {
-			$writer->setIndentString('');
-		}
-		$writer->startDocument('1.0', 'UTF-8');
-
-		$writer->startElement('root');
-//		$writer->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema');
-		$this->arrayToXmlRecursive($array, $writer);
-		$writer->endElement();
-		
-		return $writer;
+		return $this->serviceLocator;
 	}
 
-	private function arrayToXmlRecursive(array $array, \XMLWriter $writter)
-	{
-		foreach ($array as $key => $value) {
-			$elementName = (string)$key;
-			if (is_array($value)) {
-				if (is_numeric($key)) {
-					$elementName = 'item' . $key;
-				}
-				
-				$writter->startElement($elementName);
-				$this->arrayToXmlRecursive($value, $writter);
-				$writter->endElement();
-			} else {
-				if ($value === null) {
-					$writter->startElement($elementName);
-//					$writter->writeAttribute('xsi:nil', 'true');
-					$writter->writeAttribute('nil', 'true');
-					$writter->endElement();
-				} else if ($value === true) {
-					$writter->writeElement($elementName, '1');
-				} else if ($value === false) {
-					$writter->writeElement($elementName, '0');
-				} else if ($value === '') {
-					$writter->writeElement($elementName);
-				} else {
-					$writter->writeElement($elementName, (string)$value);
-				}
-			}
-		}
-	}
 }

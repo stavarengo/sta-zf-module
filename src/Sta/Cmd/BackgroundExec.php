@@ -3,6 +3,7 @@ namespace Sta\Cmd;
 
 class BackgroundExec implements Command
 {
+
 	const PRIO_MUITO_BAIXA = 1;
 	const PRIO_BAIXA       = 2;
 	const PRIO_NORMAL      = 3;

@@ -11,4 +11,5 @@ use Sta\Entity\Validator\Exception;
  */
 class InvalidArgument extends Exception
 {
+
 }

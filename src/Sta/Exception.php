@@ -6,4 +6,5 @@ namespace Sta;
  */
 class Exception extends \Exception
 {
+
 }

@@ -8,10 +8,11 @@ namespace Sta\Dbal\Types;
  */
 class MoneyPercentageType extends PercentageType
 {
+
 	const MONEY_PERCENTAGE = 'moneyPercentage';
 
-    public function getName()
-    {
-        return self::MONEY_PERCENTAGE;
-    }
+	public function getName()
+	{
+		return self::MONEY_PERCENTAGE;
+	}
 }

@@ -9,4 +9,5 @@ namespace Sta\Mvc\Controller;
  */
 class Exception extends \Sta\Exception
 {
+
 }

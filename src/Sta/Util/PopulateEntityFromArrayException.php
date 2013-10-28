@@ -6,4 +6,5 @@ namespace Sta\Util;
  */
 class PopulateEntityFromArrayException extends \Sta\Exception
 {
+
 }

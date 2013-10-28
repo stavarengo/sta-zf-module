@@ -14,12 +14,12 @@ abstract class Action
 		if (!$actionName) {
 			$actionName = $controller->params()->fromRoute('action');
 		}
-		$actionName = ucfirst($actionName);
+		$actionName      = ucfirst($actionName);
 		$controllerClass = str_replace('\\', DIRECTORY_SEPARATOR, get_class($controller));
-		$controllerName = str_replace('Controller', '', basename($controllerClass));
-		$controllerNs = dirname($controllerClass);
-		$controllerNs = str_replace(DIRECTORY_SEPARATOR, '\\', $controllerNs);
-		$actionFqcn = "$controllerNs\\Action\\$controllerName\\$actionName";
+		$controllerName  = str_replace('Controller', '', basename($controllerClass));
+		$controllerNs    = dirname($controllerClass);
+		$controllerNs    = str_replace(DIRECTORY_SEPARATOR, '\\', $controllerNs);
+		$actionFqcn      = "$controllerNs\\Action\\$controllerName\\$actionName";
 		/** @var $action Action */
 		if (!class_exists($actionFqcn)) {
 			throw new Exception('Classe "' . $actionFqcn . '" não existe.');

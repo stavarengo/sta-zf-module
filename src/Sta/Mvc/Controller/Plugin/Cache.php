@@ -24,7 +24,7 @@ class Cache extends AbstractPlugin
 		$this->addHeader('Pragma', "no-cache");
 		$this->addHeader('Expires', "Thu, 19 Nov 1981 08:52:00 GMT");
 	}
-	
+
 	/**
 	 * Configura a resposta para que ela nao seja cachiada.
 	 */
@@ -33,7 +33,7 @@ class Cache extends AbstractPlugin
 		$seconds = (int)$seconds;
 		$this->addHeader('Expires', gmdate('D, d M Y H:i:s', time() + $seconds) . ' GMT');
 	}
-	
+
 	/**
 	 * Configura a resposta para que ela nao seja cachiada.
 	 */

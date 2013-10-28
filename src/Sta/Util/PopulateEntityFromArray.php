@@ -3,12 +3,10 @@ namespace Sta\Util;
 
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Sta\Entity\AbstractEntity;
 use Zend\Mvc\Controller\Plugin\PluginInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\DispatchableInterface;
 
 /**
@@ -31,7 +29,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 * @param array $data
 	 * @param AbstractEntity $entity
 	 * @param array $options
-	 * 		Veja as opções válidas em {@link \Sta\Util\PopulateEntityFromArray::_populate()}
+	 *        Veja as opções válidas em {@link \Sta\Util\PopulateEntityFromArray::_populate()}
 	 */
 	public function populate(array $data, AbstractEntity $entity, array $options = array())
 	{
@@ -81,11 +79,11 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 
 	/**
 	 * @param array $entityData
-	 * 		Os dados da entidade no formato array.
+	 *        Os dados da entidade no formato array.
 	 * @param \Sta\Entity\AbstractEntity $entity
-	 * 		A instância da entidade que será populada.
+	 *        A instância da entidade que será populada.
 	 * @param array $options
-	 *		Ainda não aceita nenhuma opção. Foi adicionado este parâmetro para uso futuro.
+	 *        Ainda não aceita nenhuma opção. Foi adicionado este parâmetro para uso futuro.
 	 */
 	private function _populate(array $entityData, AbstractEntity $entity, array $options = array())
 	{
@@ -101,13 +99,13 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 		$associationMappings = $classMetadata->associationMappings;
 		foreach ($associationMappings as $field => $fieldDefinition) {
 			if (array_key_exists($field, $entityData)) {
-				$targetEntity = $fieldDefinition['targetEntity'];
+				$targetEntity  = $fieldDefinition['targetEntity'];
 				$associationId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
-				$qb = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
+				$qb            = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
 				$qb->select('a');
 				$qb->where('a.id = ?1');
 				$qb->setParameter(1, $associationId);
-				$q                = $qb->getQuery();
+				$q = $qb->getQuery();
 //				$q->setFetchMode($targetEntity, $field,  ClassMetadata::FETCH_EAGER);
 //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
 //				$q->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, true);
@@ -124,10 +122,10 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 			$fieldType     = $fieldDefinition['type'];
 			$datetimeTypes = array('datetime', 'date', 'time');
 			if (in_array($fieldType, $datetimeTypes)) {
-				$config        = $this->serviceManager->getServiceLocator()->get('config');
-				$defTz         = $config['webapp']['datetime']['deftault-timezone'];
-				$fieldFormat   = $config['webapp']['datetime'][$fieldType];
-				
+				$config      = $this->serviceManager->getServiceLocator()->get('config');
+				$defTz       = $config['webapp']['datetime']['deftault-timezone'];
+				$fieldFormat = $config['webapp']['datetime'][$fieldType];
+
 				$originalValue = $value;
 				if (!($value = \DateTime::createFromFormat($fieldFormat, $value))) {
 					// Se falhou ao converter a data, talvez seja pq enviou um formato completo de data para quando o 
@@ -135,8 +133,8 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 					// Ex: enviou data e hroa quando o campo aceita apenas data ou hora.
 					// Neste caso abaixo damos mais uma chance tentando descobrir se foi isso que aconteceu e usando
 					// a formatação mais adequada para o valor recebido.
-					$agora             = new \DateTime('now', $defTz);
-					$dateTimeStrLength = strlen($agora->format($config['webapp']['datetime']['datetime']));
+					$agora                = new \DateTime('now', $defTz);
+					$dateTimeStrLength    = strlen($agora->format($config['webapp']['datetime']['datetime']));
 					$lengthDaDataRecebida = strlen($originalValue);
 					if ($lengthDaDataRecebida == $dateTimeStrLength) {
 						if ($fieldType == 'time' || $fieldType == 'date') {
@@ -159,7 +157,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 
 		$entity->set($fieldName, $value);
 	}
-	
+
 	private function _getAssociationId($entityData, $associationField, $targetEntityClassName, array $options)
 	{
 		$associationData = $entityData[$associationField];

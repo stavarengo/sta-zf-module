@@ -9,4 +9,5 @@ namespace Sta\Entity\Validator;
  */
 class Exception extends \Sta\Exception
 {
+
 }

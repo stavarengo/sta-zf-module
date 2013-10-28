@@ -8,7 +8,7 @@ use Sta\Mvc\Controller\Action;
  *
  * Esta classe aceita requisições com os seguintes parâmetros
  *    depth: integer (opcional)
- * 		  Quão profundo serão retorno os itens associados a entidade principal.
+ *          Quão profundo serão retorno os itens associados a entidade principal.
  *    sort: string|string[] (opcional)
  *        Determina a ordenação dos resultados.
  *        Ex: "nome desc"

@@ -3,18 +3,15 @@ namespace Sta\Entity\Validator;
 
 use App\Entity\Annotation\SharingForbidden;
 use App\Entity\Annotation\WithCompanyOwner;
-use App\Entity\CompartilhamentoEmpresa;
 use App\Entity\Empresa;
-use App\Model\Compartilhamentos;
 use App\Model\CompartilhamentosEmpresas;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\UnitOfWork;
 use Sta\Entity\AbstractEntity;
 
 class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 {
 
-	const ENTIDADE_DUPLICADA = 'entidadeDuplicada';
+	const ENTIDADE_DUPLICADA                          = 'entidadeDuplicada';
 	const ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA = 'entidade_duplicada_sem_empresa_proprietaria';
 	/**
 	 * Validation failure message template definitions
@@ -22,7 +19,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::ENTIDADE_DUPLICADA => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas: %empresasConsideradas%',
+		self::ENTIDADE_DUPLICADA                          => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas: %empresasConsideradas%',
 		self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas todas as empresas (entidade não permite compartilhamento).',
 	);
 	/**
@@ -97,14 +94,14 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 
 		$refClass                          = \Sta\ReflectionClass::factory($value->entity);
 		$this->annoWithCompany             = $refClass->getClassAnnotation('App\Entity\Annotation\WithCompanyOwner');
-		$this->sharingForbidden           = $refClass->getClassAnnotation('App\Entity\Annotation\SharingForbidden');
+		$this->sharingForbidden            = $refClass->getClassAnnotation('App\Entity\Annotation\SharingForbidden');
 		$this->idDasEmpresasCompartilhando = array();
 		$empresasConsideradas              = array();
 		if ($this->annoWithCompany && !$this->sharingForbidden) {
 			// Se a entidade aceita compartilhamentos, buscamos as empresas que compartilham esta entidade para 
 			// garantir que o registro não será duplicado mesmo entre as diferentes empresas que participam do 
 			// compartilhamento.
-			
+
 			/** @var $modelCompartilhamentosEmpresas CompartilhamentosEmpresas */
 			$modelCompartilhamentosEmpresas = \Sta\Module::getServiceLocator()->get('Model\CompartilhamentosEmpresas');
 
@@ -170,7 +167,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 					if ($attributeValue instanceof AbstractEntity) {
 						$estaDuplicado = ($attributeValue === $otherEntityAttrValue && $this->pertenceAoCompartilhamento($sei));
 					} else if ($attributeValue == $otherEntityAttrValue) {
-						$estaDuplicado =  $this->pertenceAoCompartilhamento($sei);
+						$estaDuplicado = $this->pertenceAoCompartilhamento($sei);
 					} else {
 						$estaDuplicado = false;
 					}
@@ -245,7 +242,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		$ownerCompanyIds = $this->idDasEmpresasCompartilhando;
 		if ($ownerCompanyIds) {
 			$ownerCompanyAttr = $this->annoWithCompany->attrName;
-			if (count($ownerCompanyIds) == 1){
+			if (count($ownerCompanyIds) == 1) {
 				$qb->andWhere($qb->expr()->eq("a.$ownerCompanyAttr", ':ownerCompany'));
 				$ownerCompanyIds = reset($ownerCompanyIds);
 			} else {
@@ -253,7 +250,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			}
 			$qb->setParameter('ownerCompany', $ownerCompanyIds);
 		}
-		
+
 		$qb->setMaxResults(1);
 
 		if ($qb->getQuery()->getOneOrNullResult() !== null) {
@@ -271,7 +268,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			// entre todas as empresas existentes.
 			return true;
 		}
-		
+
 		if (count($this->idDasEmpresasCompartilhando)) {
 			/** @var $emp Empresa */
 			$emp = $otherEntity->get($this->annoWithCompany->attrName);

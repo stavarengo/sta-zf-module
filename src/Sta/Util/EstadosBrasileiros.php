@@ -3,6 +3,7 @@ namespace Sta\Util;
 
 class EstadosBrasileiros
 {
+
 	protected static $estados = null;
 
 	public static function isValidSigla($sigla)
@@ -27,7 +28,7 @@ class EstadosBrasileiros
 	 */
 	public static function getEstados()
 	{
-		if ( (!self::$estados)) {
+		if ((!self::$estados)) {
 			self::$estados = array(
 				'AC' => new EstadoBrasileiro('AC', 'Acre'),
 				'AL' => new EstadoBrasileiro('AL', 'Alagoas'),

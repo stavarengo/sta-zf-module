@@ -9,6 +9,7 @@ namespace Sta\Entity\Validator;
  */
 class IeValue
 {
+
 	/**
 	 * O número da inscrição estadual.
 	 * @var string

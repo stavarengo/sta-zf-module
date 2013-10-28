@@ -26,24 +26,25 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class MoneyType extends \Doctrine\DBAL\Types\Type
 {
+
 	const MONEY = 'money';
 
-    public function getName()
-    {
-        return self::MONEY;
-    }
+	public function getName()
+	{
+		return self::MONEY;
+	}
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-    {
-		$fieldDeclaration['precision'] = ( ! isset($fieldDeclaration['precision']) || empty($fieldDeclaration['precision']))
+	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+	{
+		$fieldDeclaration['precision'] = (!isset($fieldDeclaration['precision']) || empty($fieldDeclaration['precision']))
 			? 15 : $fieldDeclaration['precision'];
-		$fieldDeclaration['scale'] = ( ! isset($fieldDeclaration['scale']) || empty($fieldDeclaration['scale']))
+		$fieldDeclaration['scale']     = (!isset($fieldDeclaration['scale']) || empty($fieldDeclaration['scale']))
 			? 4 : $fieldDeclaration['scale'];
-        return $platform->getDecimalTypeDeclarationSQL($fieldDeclaration);
-    }
+		return $platform->getDecimalTypeDeclarationSQL($fieldDeclaration);
+	}
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
-    {
-        return (null === $value) ? null : $value;
-    }
+	public function convertToPHPValue($value, AbstractPlatform $platform)
+	{
+		return (null === $value) ? null : $value;
+	}
 }

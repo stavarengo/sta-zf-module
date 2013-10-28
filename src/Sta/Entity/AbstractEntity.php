@@ -11,6 +11,7 @@ use Sta\Entity\Exception\InvalidArgument;
  */
 abstract class AbstractEntity
 {
+
 	/**
 	 * @ORM\Id
 	 * @ORM\Column(type="integer", nullable=true)
@@ -26,7 +27,7 @@ abstract class AbstractEntity
 	{
 		return \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
 	}
-	
+
 	/**
 	 * Helper que retornar o valor de um atributo sem precisar usar os getters.
 	 *

@@ -16,7 +16,7 @@ class EntityToArray extends AbstractPlugin
 	 * @param AbstractEntity|AbstractEntity[] $entity
 	 *
 	 * @param array $options
-	 * 		Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
+	 *        Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
 	 *
 	 * @return array
 	 */
@@ -26,7 +26,7 @@ class EntityToArray extends AbstractPlugin
 		$entityToArray  = new EntityToArrayUtil($serviceLocator->get('Doctrine\ORM\EntityManager'), $serviceLocator);
 		return $entityToArray->convert($entity, $options);
 	}
-	
+
 	public function __invoke($entity = null, array $options = array())
 	{
 		if ($entity !== null) {

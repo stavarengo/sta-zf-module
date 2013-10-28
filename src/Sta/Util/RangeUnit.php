@@ -40,7 +40,7 @@ class RangeUnit
 	 *
 	 * @param int $maxLength
 	 *        Quantidade máxima permitida para o range. Tamanho total da entidade.
-	 * 		  Este valor determina 
+	 *          Este valor determina
 	 *
 	 * @param string $unit
 	 *        Unidade de medida da entidade. Ex: items, bytes.

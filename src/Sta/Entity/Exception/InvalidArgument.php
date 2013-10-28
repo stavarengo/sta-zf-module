@@ -9,4 +9,5 @@ namespace Sta\Entity\Exception;
  */
 class InvalidArgument extends \Sta\Exception
 {
+
 }

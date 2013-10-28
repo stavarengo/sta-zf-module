@@ -24,7 +24,7 @@ class RequiredFieldValue
 	function __construct(AbstractEntity $entity, $attributes)
 	{
 		$this->attributes = (array)$attributes;
-		$this->entity    = $entity;
+		$this->entity     = $entity;
 	}
 
 

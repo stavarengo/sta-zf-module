@@ -6,6 +6,7 @@ namespace Sta\Util\RangeUnit;
  */
 class Bean
 {
+
 	/**
 	 * @var int
 	 */

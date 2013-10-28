@@ -6,4 +6,5 @@ namespace Sta\Util\RangeUnit;
  */
 class Exception extends \Sta\Exception
 {
+
 }

@@ -36,7 +36,7 @@ class CpfCnpj extends AbstractValidator
 	 */
 	public function isValid($value)
 	{
-		$config = \Sta\Module::getServiceLocator()->get('config');
+		$config  = \Sta\Module::getServiceLocator()->get('config');
 		$isLocal = $config['sta']['isLocal'];
 		if ($isLocal()) {
 			return true;
@@ -70,8 +70,10 @@ class CpfCnpj extends AbstractValidator
 
 	/**
 	 * Calcula e retorna o digito verificador de um CPF.
+	 *
 	 * @param $cpfSemDv
-	 *		Somente os 9 primeiros digitos do CPF.
+	 *        Somente os 9 primeiros digitos do CPF.
+	 *
 	 * @return string
 	 */
 	public static function getCpfDv($cpfSemDv)
@@ -106,7 +108,7 @@ class CpfCnpj extends AbstractValidator
 
 		return $d1 . $d2;
 	}
-	
+
 	/**
 	 * @param string $cpf
 	 *
@@ -123,14 +125,14 @@ class CpfCnpj extends AbstractValidator
 		if (preg_match('/[ [:alpha:]]/', $cpf)) return false;
 
 		$dv = self::getCpfDv(substr($cpf, 0, 9));
-		
+
 		if (!$dv || strlen($dv) != 2) {
 			return false;
 		}
-		
+
 		$d1 = $dv[0];
 		$d2 = $dv[1];
-		
+
 		if ($d1 == $cpf[9] && $d2 == $cpf[10]) {
 			return true;
 		} else {
@@ -154,17 +156,17 @@ class CpfCnpj extends AbstractValidator
 		if (!$dv || strlen($dv) != 2) {
 			return false;
 		}
-		
+
 		$d1 = $dv[0];
 		$d2 = $dv[1];
-		
+
 		if ($cnpj[12] == $d1 && $cnpj[13] == $d2) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public static function getCnpjDv($cnpjSemDv)
 	{
 

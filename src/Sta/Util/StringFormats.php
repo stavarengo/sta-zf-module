@@ -132,7 +132,7 @@ class StringFormats
 
 	public static function printSQL($sql, $return = false)
 	{
-		if($sql instanceof \Doctrine\ORM\QueryBuilder) {
+		if ($sql instanceof \Doctrine\ORM\QueryBuilder) {
 			$sql = $sql->getQuery()->getSQL();
 		}
 		$sql = str_replace('SELECT ', "SELECT\n\t", $sql);

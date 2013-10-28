@@ -3,6 +3,7 @@ namespace Sta\Util;
 
 class EstadoBrasileiro
 {
+
 	/**
 	 * @var string
 	 */

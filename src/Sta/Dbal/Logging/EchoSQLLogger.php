@@ -11,6 +11,7 @@ use Sta\Util\StringFormats;
  */
 class EchoSQLLogger implements SQLLogger
 {
+
 	/**
 	 * {@inheritdoc}
 	 */

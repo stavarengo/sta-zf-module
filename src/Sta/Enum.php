@@ -24,7 +24,7 @@ abstract class Enum
 	 * @param string $name
 	 */
 	private function __construct($value, $name = null)
-    {
+	{
 		if (is_array($value)) {
 			if (count($value) == 2) {
 				$name = $value[1];
@@ -32,30 +32,30 @@ abstract class Enum
 			$value = $value[0];
 		}
 
-    	$this->value = $value;
-    	$this->name = ($name ? $name : $value);
-    }
+		$this->value = $value;
+		$this->name  = ($name ? $name : $value);
+	}
 
 	/**
 	 * @param string $class
 	 */
 	public static function start($class)
-    {
-    	if (array_key_exists($class, self::$alreadyInitiated)) return;
+	{
+		if (array_key_exists($class, self::$alreadyInitiated)) return;
 
-		$reflect = new \ReflectionClass($class);
+		$reflect    = new \ReflectionClass($class);
 		$properties = $reflect->getStaticProperties();
 
-    	self::$alreadyInitiated[$class] = array(
-			'reflect' => $reflect,
+		self::$alreadyInitiated[$class] = array(
+			'reflect'    => $reflect,
 			'properties' => $properties,
 		);
 
-    	foreach ($properties as $propName => $propValue) {
-   			$newValue = new $class($propValue);
-    		$reflect->setStaticPropertyValue($propName, $newValue);
-    	}
-    }
+		foreach ($properties as $propName => $propValue) {
+			$newValue = new $class($propValue);
+			$reflect->setStaticPropertyValue($propName, $newValue);
+		}
+	}
 
 //	public static function get($value)
 //	{
@@ -75,17 +75,17 @@ abstract class Enum
 	 * @return int
 	 */
 	public function getValue()
-    {
-    	return (int)$this->value;
-    }
+	{
+		return (int)$this->value;
+	}
 
 	/**
 	 * @return string
 	 */
 	public function __toString()
-    {
-        return (string)$this->name;
-    }
+	{
+		return (string)$this->name;
+	}
 
 	/**
 	 * @param Enum $other
@@ -93,14 +93,14 @@ abstract class Enum
 	 * @return bool
 	 */
 	public function equals(Enum $other)
-    {
-        if ($other === null || !is_object($other)) {
-            return false;
-        }
-        if (get_class($this) != get_class($other)) {
-        	return false;
-        }
-        
-        return ($this->getValue() == $other->getValue());
-    }	
+	{
+		if ($other === null || !is_object($other)) {
+			return false;
+		}
+		if (get_class($this) != get_class($other)) {
+			return false;
+		}
+
+		return ($this->getValue() == $other->getValue());
+	}
 }

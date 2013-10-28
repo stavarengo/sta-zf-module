@@ -41,12 +41,12 @@ class Ie extends AbstractValidator
 			throw new InvalidArgument();
 		}
 
-		$conf          = \Sta\Module::getServiceLocator()->get('Configuration');
-		$staConf       = $conf['sta'];
+		$conf    = \Sta\Module::getServiceLocator()->get('Configuration');
+		$staConf = $conf['sta'];
 		if ($staConf['isLocal']()) {
 			return true;
 		}
-		
+
 		$ie = $value->ie;
 		$uf = $value->uf;
 
@@ -527,8 +527,7 @@ class Ie extends AbstractValidator
 					$dig = 0;
 				} else {
 					$dig = 11 - $i;
-				}
-				;
+				};
 
 				return ($dig == $ie[12]);
 			}

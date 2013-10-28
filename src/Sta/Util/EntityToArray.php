@@ -9,11 +9,9 @@ use Doctrine\DBAL\Types\DateTimeTzType;
 use Doctrine\DBAL\Types\DateType;
 use Doctrine\DBAL\Types\TimeType;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\PersistentCollection;
 use Sta\Entity\AbstractEntity;
 use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\ServiceManager;
-use Zend\XmlRpc\Value\DateTime;
 
 /**
  * @author: Stavarengo
@@ -44,7 +42,7 @@ class EntityToArray
 	 * @param AbstractEntity|AbstractEntity[] $entity
 	 *
 	 * @param array $options
-	 * 		Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
+	 *        Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
 	 *
 	 * @return array
 	 */
@@ -65,66 +63,67 @@ class EntityToArray
 	 * @param AbstractEntity $entity
 	 *
 	 * @param array $options
-	 * 		Opções disponiveis:<ul>
-	 * 			<li>depth: int - default 0 <br>
-	 * 				Define a profundidade que que devemos alcançar nos relacionamentos entre as classes.
-	 * 				Veja mais em {@link https://github.com/grandssistemas/sell/wiki/Parametro-depth}
-	 * 			</li>
-	 * 			<li>
-	 * 				noEntityName: bool - default false <br>
-	 * 				Quando true cada entidade estara relacionada a um atributo cujo nome é igual ao nome da entidade.
-	 * 				Ex: abaixo temos uma entidade Produto, e o valor deste parâmetro é false.
+	 *        Opções disponiveis:<ul>
+	 *            <li>depth: int - default 0 <br>
+	 *                Define a profundidade que que devemos alcançar nos relacionamentos entre as classes.
+	 *                Veja mais em {@link https://github.com/grandssistemas/sell/wiki/Parametro-depth}
+	 *            </li>
+	 *            <li>
+	 *                noEntityName: bool - default false <br>
+	 *                Quando true cada entidade estara relacionada a um atributo cujo nome é igual ao nome da entidade.
+	 *                Ex: abaixo temos uma entidade Produto, e o valor deste parâmetro é false.
 	 * <pre>
-	 * 	array(
-	 *		'id' => 106,
-	 *		'descricao' => 'Calça Masculina',
-	 * 		'unidadeMedida' => array(
-	 *			'id' => 15,
-	 *			'nome' => 'Unidade',
-	 *			'sigla' => 'UN',
-	 * 		),
-	 * 	);
+	 *    array(
+	 *        'id' => 106,
+	 *        'descricao' => 'Calça Masculina',
+	 *        'unidadeMedida' => array(
+	 *            'id' => 15,
+	 *            'nome' => 'Unidade',
+	 *            'sigla' => 'UN',
+	 *        ),
+	 *    );
 	 * </pre>
-	 * 				Agora, no exemplo abaixo, temos a mesma entidade exibida acima, porem o valor deste parametro é true.
+	 *                Agora, no exemplo abaixo, temos a mesma entidade exibida acima, porem o valor deste parametro é true.
 	 * <pre>
-	 * 	array(
-	 * 		'Produto' => array(
-	 *			'id' => 106 ,
-	 *			'descricao' => 'Calça Masculina',
-	 * 			'unidadeMedida' => array(
-	 * 				'_en' => 'UnidadeMedida',
-	 * 				'UnidadeMedida' => array(
-	 *					'id' => 15,
-	 *					'nome' => 'Unidade',
-	 *					'sigla' => 'UN',
-	 * 				),
-	 * 			),
-	 * 		),
-	 * 	);
+	 *    array(
+	 *        'Produto' => array(
+	 *            'id' => 106 ,
+	 *            'descricao' => 'Calça Masculina',
+	 *            'unidadeMedida' => array(
+	 *                '_en' => 'UnidadeMedida',
+	 *                'UnidadeMedida' => array(
+	 *                    'id' => 15,
+	 *                    'nome' => 'Unidade',
+	 *                    'sigla' => 'UN',
+	 *                ),
+	 *            ),
+	 *        ),
+	 *    );
 	 * </pre>
-	 * 			</li>
+	 *            </li>
 	 * </ul>
+	 *
 	 * @return array
 	 */
 	private function _convert(AbstractEntity $entity, array $options = array())
 	{
-		
-		$em              = $this->em;
-		$entityClass     = get_class($entity);
-		$classMetadata   = $em->getClassMetadata($entityClass);
-		$regexp 		 = '`^.*' . preg_quote($classMetadata->namespace . '\\`');
-		$entityName		 = preg_replace($regexp, '', $entityClass);
-		$fieldMappings   = $classMetadata->fieldMappings;
-		$return          = array();
-		$noEntityName = $this->_getOptions($options, 'noEntityName', false);
-		
+
+		$em            = $this->em;
+		$entityClass   = get_class($entity);
+		$classMetadata = $em->getClassMetadata($entityClass);
+		$regexp        = '`^.*' . preg_quote($classMetadata->namespace . '\\`');
+		$entityName    = preg_replace($regexp, '', $entityClass);
+		$fieldMappings = $classMetadata->fieldMappings;
+		$return        = array();
+		$noEntityName  = $this->_getOptions($options, 'noEntityName', false);
+
 		foreach ($fieldMappings as $fieldName => $fieldDefinition) {
 //			$reflection = new \ReflectionProperty($entityClass, $fieldName);
 //			$reflection->setAccessible(true);
 
 //			$fieldValue  = $reflection->getValue($entity);
 			$fieldValue = $entity->get($fieldName);
-			$type        = ($fieldDefinition && isset($fieldDefinition['type']) ? strtolower($fieldDefinition['type']) : null);
+			$type       = ($fieldDefinition && isset($fieldDefinition['type']) ? strtolower($fieldDefinition['type']) : null);
 
 			$return[$fieldName] = $this->_convertFieldValue($fieldValue, $type, $options);
 		}
@@ -138,7 +137,7 @@ class EntityToArray
 			if (!$fieldDefinition['isOwningSide']) {
 				continue;
 			}
-			$fieldValue = $entity->get($fieldName);
+			$fieldValue         = $entity->get($fieldName);
 			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null, $options);
 		}
 
@@ -193,10 +192,10 @@ class EntityToArray
 		if ($subEntity instanceof \Doctrine\ORM\Proxy\Proxy || $subEntity instanceof AbstractEntity) {
 			$returnValue = $this->_getDepthEntityOrJustId($subEntity, $options);
 		} else if ($subEntity instanceof \Doctrine\Common\Collections\Collection) {
-				$returnValue = array();
-				foreach ($subEntity as $subitem) {
-					$returnValue[] = $this->_getDepthEntityOrJustId($subitem, $options);
-				}
+			$returnValue = array();
+			foreach ($subEntity as $subitem) {
+				$returnValue[] = $this->_getDepthEntityOrJustId($subitem, $options);
+			}
 		} else {
 			// @TODO O que fazer nesta situação?
 		}

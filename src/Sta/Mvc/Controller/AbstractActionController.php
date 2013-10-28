@@ -38,12 +38,12 @@ class AbstractActionController extends \Zend\Mvc\Controller\AbstractActionContro
 	{
 		return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 	}
-	
+
 	public function getParam($param, $default = null)
 	{
 		$def = '____nao-existe-' . time() . '____';
 		if (($value = $this->params()->fromQuery($param, $def)) !== $def
-			|| ($value = $this->params()->fromPost($param, $def)) !== $def 
+			|| ($value = $this->params()->fromPost($param, $def)) !== $def
 			|| ($value = $this->params()->fromRoute($param, $def)) !== $def
 		) {
 			return $value;

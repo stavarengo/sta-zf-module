@@ -7,11 +7,12 @@ use Zend\View\Helper\AbstractHelper;
 
 class IsMobile extends AbstractHelper implements ServiceLocatorAwareInterface
 {
+
 	/**
 	 * @var ServiceLocatorAwareInterface
 	 */
 	private $serviceLocator;
-	
+
 	/**
 	 * @var bool
 	 */

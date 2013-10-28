@@ -51,25 +51,25 @@ class GetRequestContent extends AbstractPlugin
 
 		return $data;
 	}
-	
+
 	private function normalizeAttributes(array $data)
 	{
 		foreach ($data as $key => $value) {
 			if (is_array($value)) {
 				if (isset($value['@attributes']) && is_array($value['@attributes'])) {
 					// Verificamos quais dos atributos suportados foram usados, e depois disto ignora os demais atributos.
-					
-					$newValue = '';// Por padrão os campos XML são string vazias
+
+					$newValue = ''; // Por padrão os campos XML são string vazias
 					if (array_key_exists('@text', $value)) {
 						$newValue = $value['@text'];
 					}
-					
+
 					$attributes = $value['@attributes'];
 					if (array_key_exists('nil', $attributes) && $attributes['nil']) {
 						// Este campo é nulo
 						$newValue = null;
 					}
-					
+
 					$data[$key] = $newValue;
 				} else {
 					// Este valor é um array, mas não é um array de atributos, então deve ser um array com mais dados de otura entidade

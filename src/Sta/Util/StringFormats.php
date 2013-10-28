@@ -133,10 +133,30 @@ class StringFormats
 	public static function printSQL($sql, $return = false)
 	{
 		if ($sql instanceof \Doctrine\ORM\QueryBuilder) {
+			$params = $sql->getParameters();
 			$sql = $sql->getQuery()->getSQL();
+			/** @var $param \Doctrine\ORM\Query\Parameter */
+			foreach ($params as $param) {
+				$paramValue = $param->getValue();
+				$sqlParamValue = $paramValue;
+				
+				if ($paramValue instanceof \DateTime) {
+					$sqlParamValue = "'" . $paramValue->format('Y-m-d H:m:s') . "'";
+				} else if (is_array($paramValue)) {
+					$valueAux = array();
+					foreach ($paramValue as $value) {
+						if ($value instanceof \Sta\Entity\AbstractEntity) {
+							$valueAux[] = $value->getId();
+						}
+					}
+					$sqlParamValue = implode(',', $valueAux);
+				}
+				
+				$sql = preg_replace('/\?/', $sqlParamValue, $sql, 1);
+			}
 		}
 		$sql = str_replace('SELECT ', "SELECT\n\t", $sql);
-		$sql = str_replace(', ', "\n\t", $sql);
+		$sql = str_replace(', ', ",\n\t", $sql);
 		$sql = str_replace('`, ', "`,\n\t", $sql);
 		$sql = str_replace(' FROM ', "\nFROM ", $sql);
 		$sql = str_replace(' INNER JOIN ', "\nINNER JOIN ", $sql);

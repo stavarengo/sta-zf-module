@@ -1,6 +1,7 @@
 <?php
 namespace Sta\Entity\Validator;
 
+use App\Entity\Annotation\SharingForbidden;
 use App\Entity\Annotation\WithCompanyOwner;
 use App\Entity\CompartilhamentoEmpresa;
 use App\Entity\Empresa;
@@ -71,6 +72,10 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	 * @var string
 	 */
 	private $entityClass;
+	/**
+	 * @var SharingForbidden
+	 */
+	private $sharingForbidden;
 
 	/**
 	 * @param RegistroDuplicadoValue $value
@@ -92,15 +97,17 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 
 		$refClass                          = \Sta\ReflectionClass::factory($value->entity);
 		$this->annoWithCompany             = $refClass->getClassAnnotation('App\Entity\Annotation\WithCompanyOwner');
+		$this->sharingForbidden           = $refClass->getClassAnnotation('App\Entity\Annotation\SharingForbidden');
 		$this->idDasEmpresasCompartilhando = array();
 		$empresasConsideradas              = array();
-		if ($this->annoWithCompany) {
-			/** @var $modelCompartilhamentos Compartilhamentos */
-			$modelCompartilhamentos = \Sta\Module::getServiceLocator()->get('Model\Compartilhamentos');
+		if ($this->annoWithCompany && !$this->sharingForbidden) {
+			// Se a entidade aceita compartilhamentos, buscamos as empresas que compartilham esta entidade para 
+			// garantir que o registro não será duplicado mesmo entre as diferentes empresas que participam do 
+			// compartilhamento.
+			
 			/** @var $modelCompartilhamentosEmpresas CompartilhamentosEmpresas */
 			$modelCompartilhamentosEmpresas = \Sta\Module::getServiceLocator()->get('Model\CompartilhamentosEmpresas');
 
-			$compartilhamento                = $modelCompartilhamentos->byEntityName($this->entityClass);
 			$empresaProprietaria                 = $value->entity->get($this->annoWithCompany->attrName);
 			$empresasQueCompartilhamEstaEntidade = $modelCompartilhamentosEmpresas->getCompaniesThatShareThisEntityWithMe($empresaProprietaria, $this->entityClass);
 			/** @var $row Empresa */
@@ -259,7 +266,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 
 	private function pertenceAoCompartilhamento(AbstractEntity $otherEntity)
 	{
-		if (!$this->annoWithCompany) {
+		if (!$this->annoWithCompany || $this->sharingForbidden) {
 			// se esta empresa não permite compartilhamentos, nos retornamos true, pq qualquer registro é acessado
 			// entre todas as empresas existentes.
 			return true;
@@ -280,7 +287,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	 */
 	private function errorEntidadeDuplicada()
 	{
-		if ($this->annoWithCompany) {
+		if ($this->annoWithCompany && !$this->sharingForbidden) {
 			$this->error(self::ENTIDADE_DUPLICADA);
 		} else {
 			$this->error(self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA);

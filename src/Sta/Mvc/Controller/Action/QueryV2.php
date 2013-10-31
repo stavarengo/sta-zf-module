@@ -6,8 +6,8 @@ use Sta\Mvc\Controller\Action;
 
 /**
  * Extende {@link \Sta\Mvc\Controller\Action\Query} para criar uma classe que ja implementa a maior parte dos comportamentos
- * de uma ação de query. 
- * 
+ * de uma ação de query.
+ *
  * @author: Stavarengo
  */
 abstract class QueryV2 extends Query
@@ -47,7 +47,12 @@ abstract class QueryV2 extends Query
 	 */
 	protected function fetchAll(array $sortDef, $count = null, $offset = null)
 	{
-		$entidades = $this->getQueryBuild()->getQuery()->getResult();
+		$query = $this->getQueryBuild()->getQuery();
+
+		$query->setMaxResults($count);
+		$query->setFirstResult($offset);
+		
+		$entidades = $query->getResult();
 		$entidades = $this->getController()->entityToArray($entidades, array(
 			'depth' => $this->getController()->getParam('depth'),
 		));

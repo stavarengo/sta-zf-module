@@ -111,8 +111,8 @@ class RangeUnit
 				$count     = $this->maxLength;
 
 				if ($this->acceptQueryParams) {
-					$start = $this->controller->params()->fromQuery('start', $start);
-					$count = $this->controller->params()->fromQuery('count', $count);
+					$start = (int)$this->controller->params()->fromQuery('start', $start);
+					$count = (int)$this->controller->params()->fromQuery('count', $count);
 				}
 
 				$end         = ($start + ($count > 0 ? ($count - 1) : 0));

@@ -65,6 +65,15 @@ abstract class Query extends Action
 	 */
 	public function execute()
 	{
+		try {
+			return $this->_execute();
+		} catch (\Exception $e) {
+			return $this->getController()->getConfiguredResponse(400, $e->getMessage());
+		}
+	}
+
+	private function _execute()
+	{
 		$rowCount = $this->count();
 
 		$rangeUnitObj = $this->getController()->rangeUnit($rowCount, $this->rangeUnit);

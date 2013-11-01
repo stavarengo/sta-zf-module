@@ -130,7 +130,7 @@ class StringFormats
 		return self::formatarCpf($cpfCnpj);
 	}
 
-	public static function printSQL($sql, $return = false)
+	public static function printSQL($sql, $return = false, $html = false)
 	{
 		if ($sql instanceof \Doctrine\ORM\QueryBuilder) {
 			$params = $sql->getParameters();
@@ -142,6 +142,8 @@ class StringFormats
 				
 				if ($paramValue instanceof \DateTime) {
 					$sqlParamValue = "'" . $paramValue->format('Y-m-d H:m:s') . "'";
+				} else if ($paramValue instanceof \Sta\Entity\AbstractEntity) {
+					$sqlParamValue = $paramValue->getId();
 				} else if (is_array($paramValue)) {
 					$valueAux = array();
 					foreach ($paramValue as $value) {
@@ -162,6 +164,7 @@ class StringFormats
 		$sql = str_replace(' INNER JOIN ', "\nINNER JOIN ", $sql);
 		$sql = str_replace(' LEFT JOIN ', "\nLEFT JOIN ", $sql);
 		$sql = str_replace(') AND (', ")\nAND (", $sql);
+		$sql = str_replace(' AND ', "\nAND ", $sql);
 		$sql = str_replace(' WHERE ', "\nWHERE ", $sql);
 		$sql = str_replace(' GROUP BY', "\nGROUP BY", $sql);
 		$sql = str_replace(' ORDER BY', "\nORDER BY", $sql);

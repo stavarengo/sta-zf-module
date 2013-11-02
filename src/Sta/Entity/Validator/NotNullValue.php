@@ -3,7 +3,7 @@ namespace Sta\Entity\Validator;
 
 use Sta\Entity\AbstractEntity;
 
-class RequiredFieldValue
+class NotNullValue
 {
 
 	/**

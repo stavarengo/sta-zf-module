@@ -8,15 +8,15 @@ use Zend\Validator\NotEmpty;
 /**
  * @author: Stavarengo
  */
-class RequiredField extends AbstractValidator
+class NotNull extends AbstractValidator
 {
 
-	const REQUIRED_FIELD = 'requiredField';
+	const NOT_NULL_FIELD = 'not_null_field';
 	/**
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::REQUIRED_FIELD => 'O atributo "%entityName%::%field%" é necessário e não pode ser vazio.',
+		self::NOT_NULL_FIELD => 'O atributo "%entityName%::%field%" é necessário e não pode ser vazio.',
 	);
 	/**
 	 * @var array
@@ -36,19 +36,17 @@ class RequiredField extends AbstractValidator
 
 	public function isValid($value)
 	{
-		if (!$value instanceof RequiredFieldValue) {
+		if (!$value instanceof NotNullValue) {
 			throw new \Sta\Entity\Validator\InvalidArgument();
 		}
 
 		$entity   = $value->entity;
-		$notEmpty = new NotEmpty();
 		foreach ($value->attributes as $attributeName) {
 			$attributeValue = $entity->get($attributeName);
-			$isValid        = $notEmpty->isValid($attributeValue);
-			if (!$isValid && $isValid !== false) {
+			if ($attributeValue === null) {
 				$this->entityName = get_class($entity);
 				$this->field      = $attributeName;
-				$this->error(self::REQUIRED_FIELD);
+				$this->error(self::NOT_NULL_FIELD);
 				return false;
 			}
 		}

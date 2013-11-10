@@ -1,11 +1,4 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonModule for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Sta;
 
@@ -77,7 +70,9 @@ class Module implements Feature\AutoloaderProviderInterface,
 
 		$e->getApplication()->getEventManager()->attach(array(MvcEvent::EVENT_DISPATCH_ERROR, MvcEvent::EVENT_RENDER_ERROR), function(MvcEvent $e) {
 			$e->getViewModel()->ocorreuUmErro = true;
-			$e->getResponse()->getHeaders()->addHeaderLine('Content-type', 'text/html; charset=utf-8');
+			if (method_exists($e->getResponse(), 'getHeaders')) {
+				$e->getResponse()->getHeaders()->addHeaderLine('Content-type', 'text/html; charset=utf-8');
+			}
 		});
 
 		// Esta função habilita o uso de layouts específicos por módulos.

@@ -157,20 +157,44 @@ class StringFormats
 				$sql = preg_replace('/\?/', $sqlParamValue, $sql, 1);
 			}
 		}
-		$sql = str_replace('SELECT ', "SELECT\n\t", $sql);
+		$sql = str_replace('SELECT ', "\bSELECT\b\n\t", $sql);
 		$sql = str_replace(', ', ",\n\t", $sql);
 		$sql = str_replace('`, ', "`,\n\t", $sql);
-		$sql = str_replace(' FROM ', "\nFROM ", $sql);
-		$sql = str_replace(' INNER JOIN ', "\nINNER JOIN ", $sql);
-		$sql = str_replace(' LEFT JOIN ', "\nLEFT JOIN ", $sql);
-		$sql = str_replace(') AND (', ")\nAND (", $sql);
-		$sql = str_replace(' AND ', "\nAND ", $sql);
-		$sql = str_replace(' WHERE ', "\nWHERE ", $sql);
-		$sql = str_replace(' GROUP BY', "\nGROUP BY", $sql);
-		$sql = str_replace(' ORDER BY', "\nORDER BY", $sql);
-		$sql = str_replace(' WHERE ', "\nWHERE ", $sql);
-		$sql = str_replace(' LIMIT ', "\nLIMIT ", $sql);
-
+		$sql = preg_replace('/COUNT\((.+?)\)/', "\bCOUNT(\b$1\b)\b", $sql);
+		$sql = str_replace(' FROM ', "\n\bFROM\b ", $sql);
+		$sql = str_replace(' INNER JOIN ', "\n\bINNER JOIN\b ", $sql);
+		$sql = str_replace(' LEFT JOIN ', "\n\bLEFT JOIN\b ", $sql);
+		$sql = str_replace(' ON ', " \bON\b ", $sql);
+		$sql = str_replace(' OR ', " \bOR\b ", $sql);
+		$sql = str_replace(') AND (', ")\n\bAND\b (", $sql);
+		$sql = str_replace(' AND ', "\n\bAND\b ", $sql);
+		$sql = str_replace(' WHERE ', "\n\bWHERE\b ", $sql);
+		$sql = str_replace(' GROUP BY', "\n\bGROUP BY\b", $sql);
+		$sql = str_replace(' ORDER BY', "\n\bORDER BY\b", $sql);
+		$sql = str_replace(' WHERE ', "\n\bWHERE\b ", $sql);
+		$sql = str_replace(' LIMIT ', "\n\bLIMIT\b ", $sql);
+		$sql = str_replace(' OFFSET ', " \bOFFSET\b ", $sql);
+		$sql = str_replace(' DESC', " \bDESC\b", $sql);
+		
+		if ($html) {
+			$sql = preg_replace(array(
+				"/\n/",
+				"/\t/",
+				"/\\\b(.+?)\\\b/",
+			) , array(
+				'<br>',
+				'&nbsp;&nbsp;&nbsp;&nbsp;',
+				'<b>$1</b>',
+			), $sql);
+			$sql = '<span style="font-family: Monaco, Menlo, Consolas, Courier New, monospace">' . $sql . '</span>';
+		} else {
+			$sql = preg_replace(array(
+				"/\b/",
+			) , array(
+				'',
+			), $sql);
+		}
+		
 		if ($return) {
 			return $sql;
 		} else {

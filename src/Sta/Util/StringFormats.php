@@ -160,6 +160,7 @@ class StringFormats
 		$sql = str_replace('SELECT ', "\bSELECT\b\n\t", $sql);
 		$sql = str_replace(', ', ",\n\t", $sql);
 		$sql = str_replace('`, ', "`,\n\t", $sql);
+		$sql = str_replace(' AS ', " \bAS\b ", $sql);
 		$sql = preg_replace('/COUNT\((.+?)\)/', "\bCOUNT(\b$1\b)\b", $sql);
 		$sql = str_replace(' FROM ', "\n\bFROM\b ", $sql);
 		$sql = str_replace(' INNER JOIN ', "\n\bINNER JOIN\b ", $sql);
@@ -175,6 +176,10 @@ class StringFormats
 		$sql = str_replace(' LIMIT ', "\n\bLIMIT\b ", $sql);
 		$sql = str_replace(' OFFSET ', " \bOFFSET\b ", $sql);
 		$sql = str_replace(' DESC', " \bDESC\b", $sql);
+		$sql = str_replace(' IS ', " \bIS\b ", $sql);
+		$sql = str_replace(' NOT ', " \bNOT\b ", $sql);
+		$sql = str_replace(' NULL', " \bNULL\b", $sql);
+		$sql = preg_replace('/(SELECT.*\t)\((.+)\)(.*FROM)/s', "$1(\n\t\t$2\n\t)$3", $sql);
 		
 		if ($html) {
 			$sql = preg_replace(array(
@@ -189,7 +194,7 @@ class StringFormats
 			$sql = '<span style="font-family: Monaco, Menlo, Consolas, Courier New, monospace">' . $sql . '</span>';
 		} else {
 			$sql = preg_replace(array(
-				"/\b/",
+				"/\\\b/",
 			) , array(
 				'',
 			), $sql);

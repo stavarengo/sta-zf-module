@@ -161,6 +161,12 @@ class StringFormats
 		$sql = str_replace(', ', ",\n\t", $sql);
 		$sql = str_replace('`, ', "`,\n\t", $sql);
 		$sql = str_replace(' AS ', " \bAS\b ", $sql);
+		$sql = str_replace('CASE', "\bCASE\b", $sql);
+		$sql = str_replace(' LIKE ', " \bLIKE\b ", $sql);
+		$sql = str_replace(' WHEN ', "\n\t\t\bWHEN\b ", $sql);
+		$sql = str_replace(' ELSE ', "\n\t\t\bELSE\b ", $sql);
+		$sql = str_replace(' END', "\n\t\bEND\b", $sql);
+		$sql = str_replace(' THEN ', " \bTHEN\b ", $sql);
 		$sql = preg_replace('/COUNT\((.+?)\)/', "\bCOUNT(\b$1\b)\b", $sql);
 		$sql = str_replace(' FROM ', "\n\bFROM\b ", $sql);
 		$sql = str_replace(' INNER JOIN ', "\n\bINNER JOIN\b ", $sql);

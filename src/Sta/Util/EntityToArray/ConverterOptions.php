@@ -81,6 +81,9 @@ class ConverterOptions
 	 */
 	public function setDepth($depth)
 	{
+		if ($depth == 'Infinity') {
+			$depth = PHP_INT_MAX;
+		}
 		$this->depth = $depth;
 	}
 

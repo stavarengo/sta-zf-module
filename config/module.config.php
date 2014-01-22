@@ -23,6 +23,9 @@ return array(
 		'invokables' => array(
 			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponse', 
 		),
+		'factories' => array(
+			'Sta\Util\EntityToArray' => 'Sta\Util\EntityToArray\Factory', 
+		),
 		'aliases' => array(
 			'Em' => 'Doctrine\ORM\EntityManager',
 		),

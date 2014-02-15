@@ -61,4 +61,14 @@ abstract class Action
 	{
 		return $this->getController()->params($param, $default);
 	}
+
+    public function getServiceLocator()
+    {
+        return $this->getController()->getServiceLocator();
+    }
+
+    public function getRequest()
+    {
+        return $this->getController()->getRequest();
+    }
 }

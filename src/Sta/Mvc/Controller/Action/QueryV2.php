@@ -55,6 +55,7 @@ abstract class QueryV2 extends Query
 		$entidades = $query->getResult();
 		$entidades = $this->getController()->entityToArray($entidades, array(
 			'depth' => $this->getController()->getParam('depth'),
+			'noEntityName' => $this->getController()->getParam('noEntityName', false),
 		));
 		return $entidades;
 	}

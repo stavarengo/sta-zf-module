@@ -54,9 +54,11 @@ class EntityToArray
 		} else {
 			if (count($entity)) {
 				$pice = reset($entity);
-			}
+            } else {
+                return array();
+            }
 		}
-
+        
 		$converter = $this->_createCovnerter($pice);
 		foreach ($options as $optionName => $optionValue) {
 			$converter->setOption($optionName, $optionValue);

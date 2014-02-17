@@ -50,8 +50,7 @@ class Converter
 		$em            = $this->em;
 		$entityClass   = get_class($entity);
 		$classMetadata = $em->getClassMetadata($entityClass);
-		$regexp        = '`^.*' . preg_quote($classMetadata->namespace . '\\`');
-		$entityName    = preg_replace($regexp, '', $entityClass);
+        $entityName    = $this->_getEntityName($entity);
 		$fieldMappings = $classMetadata->fieldMappings;
 		$return        = array();
 		$noEntityName  = $options->getNoEntityName();
@@ -167,7 +166,7 @@ class Converter
 			if ($options->getNoEntityName()) {
 				return $entity->getId();
 			} else {
-				$entityName = basename(get_class($entity));
+                $entityName = $this->_getEntityName($entity);
 				return array('_en' => $entityName, $entityName => array('id' => $entity->getId()));
 			}
 		}
@@ -231,5 +230,14 @@ class Converter
 			'noEntityName' => $this->getRequest()->getQuery('noEntityName', true),
 		);
 	}
-
+    
+    private function _getEntityName(AbstractEntity $entity)
+    {
+        $em            = $this->em;
+        $entityClass   = get_class($entity);
+        $classMetadata = $em->getClassMetadata($entityClass);
+        $regexp        = '`^.*' . preg_quote($classMetadata->namespace . '\\`');
+        return preg_replace($regexp, '', $entityClass);
+    }
+    
 }

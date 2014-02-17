@@ -57,7 +57,21 @@ class ConverterOptions
 			$this->set($option, $value);
 		}
 	}
-
+    
+    public function toArray()
+    {
+        $data = array();
+        $attributes = get_object_vars($this);
+        foreach ($attributes as $attrName => $attrValue) {
+            $methodName = 'get' . ucfirst($attrName);
+            if (method_exists($this, $methodName)) {
+                $data[$attrName] = $attrValue;
+            }
+        }
+        
+        return $data;
+    }
+    
 	/**
 	 * @param string $name
 	 * @param any $value
@@ -81,7 +95,7 @@ class ConverterOptions
 	 */
 	public function setDepth($depth)
 	{
-		if ($depth == 'Infinity') {
+		if ($depth === 'Infinity') {
 			$depth = PHP_INT_MAX;
 		}
 		$this->depth = $depth;

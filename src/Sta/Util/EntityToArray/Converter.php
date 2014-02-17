@@ -157,9 +157,9 @@ class Converter
 		$options = $this->getOptions();
 		$depth = $options->getDepth();
 		if ($depth > 0) {
-			return $this->serviceLocator->get('Sta\Util\EntityToArray')->convert($entity, array(
-				'depth' => --$depth,
-			));
+            $optionsArray = $options->toArray();
+            $optionsArray['depth'] = --$depth;
+			return $this->serviceLocator->get('Sta\Util\EntityToArray')->convert($entity, $optionsArray);
 		} else {
 			// Mesmo que a entidade seja uma instãncia de \Doctrine\ORM\Proxy\Proxy (Lazzy Load), podemos pegar o ID
 			// da entidade, sem que ela ja carregada do DB, visto que o ID já foi carregado quando o proxy foi criado.

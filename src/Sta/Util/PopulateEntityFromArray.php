@@ -161,7 +161,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	private function _getAssociationId($entityData, $associationField, $targetEntityClassName, array $options)
 	{
 		$associationData = $entityData[$associationField];
-		$entityName      = basename($targetEntityClassName);
+		$entityName      = basename(str_replace('\\', DIRECTORY_SEPARATOR, $targetEntityClassName));
 		if (is_array($associationData) && array_key_exists($entityName, $associationData)) {
 			if (array_key_exists('id', $associationData[$entityName])) {
 				return $associationData[$entityName]['id'];

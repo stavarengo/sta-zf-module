@@ -70,13 +70,24 @@ class Converter
 			$fieldValue         = $entity->get($fieldName);
 			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null);
 		}
-
+        
+        $return = $this->processEntityArray($return);
 		if ($noEntityName == false) {
 			$return = array('_en' => $entityName, $entityName => $return);
 		}
 		return $return;
 	}
 
+    /**
+     * As subclasses podem sobrescrever este método.
+     * @param array $entity
+     * @return array
+     */
+    protected function processEntityArray(array $entity)
+    {
+        return $entity;
+    }
+    
 	/**
 	 * @param string $name
 	 * @param any $value

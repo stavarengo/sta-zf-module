@@ -105,8 +105,11 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			/** @var $modelCompartilhamentosEmpresas CompartilhamentosEmpresas */
 			$modelCompartilhamentosEmpresas = \Sta\Module::getServiceLocator()->get('Model\CompartilhamentosEmpresas');
 
+            $empresasQueCompartilhamEstaEntidade = array();
 			$empresaProprietaria                 = $value->entity->get($this->annoWithCompany->attrName);
-			$empresasQueCompartilhamEstaEntidade = $modelCompartilhamentosEmpresas->getCompaniesThatShareThisEntityWithMe($empresaProprietaria, $this->entityClass);
+            if ($empresaProprietaria) {
+                $empresasQueCompartilhamEstaEntidade = $modelCompartilhamentosEmpresas->getCompaniesThatShareThisEntityWithMe($empresaProprietaria, $this->entityClass);
+            }
 			/** @var $row Empresa */
 			foreach ($empresasQueCompartilhamEstaEntidade as $row) {
 				$this->idDasEmpresasCompartilhando[] = $row->getId();

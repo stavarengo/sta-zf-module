@@ -1,4 +1,10 @@
 <?php
+/**
+ * Sell Project (http://sell.grandsinformatica.com.br/)
+ *
+ * @link      https://github.com/grandssistemas/sell Código fonte
+ */
+
 namespace Sta\Entity;
 
 use Doctrine\ORM\EntityManager;
@@ -6,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Sta\Entity\Exception\InvalidArgument;
 
 /**
+ * Classe base para todas as entidades do Sell.
+ * 
+ * Uma entidade é um conjunto de informações que podem ser idenficado por um ID.
+ * 
  * @author: Stavarengo
  * @ORM\MappedSuperclass
  */
@@ -13,6 +23,10 @@ abstract class AbstractEntity
 {
 
 	/**
+     * Identificação da entidade.
+     * O valor deste atributo é controlado pelo WebService.
+     * Você deve armazenar este ID em sua base de dados para que você possa fazer uma ligação entre os registros da
+     * sua base de dados com as entidades do WebService.
 	 * @ORM\Id
 	 * @ORM\Column(type="integer", nullable=true)
 	 * @ORM\GeneratedValue(strategy="AUTO")
@@ -21,6 +35,7 @@ abstract class AbstractEntity
 	protected $id;
 
 	/**
+     * @ignore
 	 * @return EntityManager
 	 */
 	public function getEntityManager()
@@ -32,7 +47,7 @@ abstract class AbstractEntity
 	 * Helper que retornar o valor de um atributo sem precisar usar os getters.
 	 *
 	 * @param $attributeName
-	 *
+	 * @ignore
 	 * @throws \Sta\Entity\Exception\InvalidArgument
 	 * @return mixed
 	 */
@@ -52,6 +67,7 @@ abstract class AbstractEntity
 	}
 
 	/**
+     * @ignore
 	 * @param string $attributeName
 	 * @param $value
 	 *
@@ -70,6 +86,7 @@ abstract class AbstractEntity
 	}
 
 	/**
+     * @ignore
 	 * @return int
 	 */
 	public function getId()

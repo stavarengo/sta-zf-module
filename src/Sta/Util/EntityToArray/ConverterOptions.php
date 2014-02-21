@@ -1,5 +1,6 @@
 <?php
 namespace Sta\Util\EntityToArray;
+use Zend\Server\Reflection\ReflectionMethod;
 
 /**
  * @author: Stavarengo
@@ -80,8 +81,6 @@ class ConverterOptions
 	{
 		if (property_exists($this, $name)) {
 			call_user_func(array($this, 'set' . ucfirst($name)), $value);
-		} else {
-			throw new InvalidOption('Option "' . $name . '" is not valid.');
 		}
 	}
 	

@@ -34,7 +34,12 @@ class RangeUnit
 	 */
 	private $acceptQueryParams;
 
-	/**
+    /**
+     * @var bool
+     */
+    private $hasRange = null;
+
+    /**
 	 *
 	 * @param \Sta\Mvc\Controller\AbstractActionController $controller
 	 *
@@ -82,7 +87,15 @@ class RangeUnit
 
 		return $this->_getBean($this->maxLength, $rangeHeader);
 	}
-
+    
+    public function hasRange()
+    {
+        if ($this->hasRange === null) {
+            $this->hasRange = (bool)$this->_getRaw(false);
+        }
+        return $this->hasRange;
+    }
+    
 	/**
 	 * Busca pela entidade Range ou X-Range no cabeçalho da requisição.
 	 * Quando Range e X-Range estiver presente, Range prevalece.
@@ -97,29 +110,7 @@ class RangeUnit
 	public function getRawHeader()
 	{
 		if ($this->rawHeader === false) {
-			/** @var $request Request */
-			$request = $this->controller->getRequest();
-			if (!($rangeHeader = $request->getHeader('Range'))) {
-				// Se não encontrou a entidade Range, procura por X-Range
-				$rangeHeader = $request->getHeader('X-Range');
-			}
-
-			if (!$rangeHeader) {
-				// Se a entidade Range não foi envida, monta um range que permite retornar todas as entidades.
-				$rangeUnit = $this->unit;
-				$start     = 0;
-				$count     = $this->maxLength;
-
-				if ($this->acceptQueryParams) {
-					$start = (int)$this->controller->params()->fromQuery('start', $start);
-					$count = (int)$this->controller->params()->fromQuery('count', $count);
-				}
-
-				$end         = ($start + ($count > 0 ? ($count - 1) : 0));
-				$rangeHeader = Range::fromString("Range: $rangeUnit=$start-$end");
-			}
-
-			$this->rawHeader = $rangeHeader;
+			$this->rawHeader = $this->_getRaw(true);;
 		}
 
 		return $this->rawHeader;
@@ -176,4 +167,53 @@ class RangeUnit
 		return new Bean($start, $end, $unit);
 	}
 
+    private function _getRaw($allowDefault)
+    {
+        /** @var $request Request */
+        $request = $this->controller->getRequest();
+        if (!($rangeHeader = $request->getHeader('Range'))) {
+            // Se não encontrou a entidade Range, procura por X-Range
+            $rangeHeader = $request->getHeader('X-Range');
+        }
+
+        if (!$rangeHeader) {
+            if ($this->acceptQueryParams) {
+                $rangeUnit = $this->unit;
+                
+                $start = $this->controller->params()->fromQuery('start', null);
+                $count = $this->controller->params()->fromQuery('count', null);
+                
+                if ($start !== null || $count !== null) {
+                    // Pelo menos uma informação foi definida.
+                    
+                    $start = (int)($start === null ? 0 : $start);
+                    $count = (int)($count === null ? $this->maxLength : $count);
+                    
+                    $end         = $this->_getEnd($start, $count);
+                    $rangeHeader = Range::fromString("Range: $rangeUnit=$start-$end");
+                } else {
+                    if ($allowDefault) {
+                        // Se nem a entidade Range e nem os parametros query foram envidos, monta um range que permite retornar todas as entidades.
+                        $start     = 0;
+                        $count     = $this->maxLength;
+                        
+                        $end         = $this->_getEnd($start, $count);
+                        $rangeHeader = Range::fromString("Range: $rangeUnit=$start-$end");
+                    }
+                }
+            }
+        }
+
+        return $rangeHeader;
+    }
+
+    /**
+     * @param $start
+     * @param $count
+     * @return int
+     */
+    private function _getEnd($start, $count)
+    {
+        return ($start + ($count > 0 ? ($count - 1) : 0));
+    }
 }

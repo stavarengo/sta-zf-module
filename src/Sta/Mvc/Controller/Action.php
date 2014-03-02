@@ -12,9 +12,10 @@ abstract class Action
 	public static function invoke(AbstractActionController $controller, $actionName = null)
 	{
 		if (!$actionName) {
-			$actionName = $controller->params()->fromRoute('action');
+			$actionName = AbstractActionController::getMethodFromAction($controller->params()->fromRoute('action'));
 		}
 		$actionName      = ucfirst($actionName);
+		$actionName      = preg_replace('/Action$/', '', $actionName);
 		$controllerClass = str_replace('\\', DIRECTORY_SEPARATOR, get_class($controller));
 		$controllerName  = str_replace('Controller', '', basename($controllerClass));
 		$controllerNs    = dirname($controllerClass);

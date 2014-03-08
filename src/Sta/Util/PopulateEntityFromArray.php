@@ -89,7 +89,8 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	{
 		/** @var $entityManager EntityManager */
 		$entityManager = $this->serviceManager->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$classMetadata = $entityManager->getClassMetadata(get_class($entity));
+        $thisEntityClass = get_class($entity);
+        $classMetadata = $entityManager->getClassMetadata($thisEntityClass);
 		$fieldMappings = $classMetadata->fieldMappings;
 		foreach ($fieldMappings as $field => $fieldDefinition) {
 			if (array_key_exists($field, $entityData)) {
@@ -110,7 +111,10 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
 //				$q->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, true);
 				// @TODO Tem que fazer esta query buscar apenas o ID do objeto para melhorar a perfomance
-				$entityAssociated = $q->getOneOrNullResult();
+				if (!$entityAssociated = $q->getOneOrNullResult()) {
+                    throw new PopulateEntityFromArrayException('Valor do atributo do atributo "' . $field . '" não é ' .
+                        'válido. Não existe uma uma entidade "' . $targetEntity . '" com ID "' . $associationId . '".');
+                }
 				$this->_setValueToEntity($entity, $field, $fieldDefinition, $entityAssociated);
 			}
 		}

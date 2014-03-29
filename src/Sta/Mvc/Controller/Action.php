@@ -72,4 +72,9 @@ abstract class Action
     {
         return $this->getController()->getRequest();
     }
+
+    public function getResponse()
+    {
+        return $this->getController()->getResponse();
+    }
 }

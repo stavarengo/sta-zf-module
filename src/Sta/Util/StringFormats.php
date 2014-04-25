@@ -130,7 +130,7 @@ class StringFormats
 		return self::formatarCpf($cpfCnpj);
 	}
 
-	public static function printSQL($sql, $return = false, $html = false)
+	public static function printSQL($sql, $return = false, $html = false, $depth = 0)
 	{
 		if ($sql instanceof \Doctrine\ORM\QueryBuilder) {
 			$params = $sql->getParameters();
@@ -139,9 +139,12 @@ class StringFormats
 			foreach ($params as $param) {
 				$paramValue = $param->getValue();
 				$sqlParamValue = $paramValue;
+				$paramName = $param->getName();
 				
 				if ($paramValue instanceof \DateTime) {
 					$sqlParamValue = "'" . $paramValue->format('Y-m-d H:m:s') . "'";
+				} else if ($paramValue instanceof \Doctrine\ORM\QueryBuilder) {
+					$sqlParamValue = "\n" . self::printSQL($paramValue, true, $html, $depth + 1);
 				} else if ($paramValue instanceof \Sta\Entity\AbstractEntity) {
 					$sqlParamValue = $paramValue->getId();
 				} else if (is_array($paramValue)) {
@@ -157,29 +160,32 @@ class StringFormats
 				$sql = preg_replace('/\?/', $sqlParamValue, $sql, 1);
 			}
 		}
-		$sql = str_replace('SELECT ', "\bSELECT\b\n\t", $sql);
-		$sql = str_replace(', ', ",\n\t", $sql);
-		$sql = str_replace('`, ', "`,\n\t", $sql);
+        
+        $depth = str_repeat("\t", $depth);
+        
+		$sql = str_replace('SELECT ', "{$depth}\bSELECT\b\n{$depth}\t", $sql);
+		$sql = str_replace(', ', ",\n{$depth}\t", $sql);
+		$sql = str_replace('`, ', "`,\n{$depth}\t", $sql);
 		$sql = str_replace(' AS ', " \bAS\b ", $sql);
 		$sql = str_replace('CASE', "\bCASE\b", $sql);
 		$sql = str_replace(' LIKE ', " \bLIKE\b ", $sql);
-		$sql = str_replace(' WHEN ', "\n\t\t\bWHEN\b ", $sql);
-		$sql = str_replace(' ELSE ', "\n\t\t\bELSE\b ", $sql);
-		$sql = str_replace(' END', "\n\t\bEND\b", $sql);
+		$sql = str_replace(' WHEN ', "\n{$depth}\t{$depth}\t\bWHEN\b ", $sql);
+		$sql = str_replace(' ELSE ', "\n{$depth}\t{$depth}\t\bELSE\b ", $sql);
+		$sql = str_replace(' END', "\n{$depth}\t\bEND\b", $sql);
 		$sql = str_replace(' THEN ', " \bTHEN\b ", $sql);
 		$sql = preg_replace('/COUNT\((.+?)\)/', "\bCOUNT(\b$1\b)\b", $sql);
-		$sql = str_replace(' FROM ', "\n\bFROM\b ", $sql);
-		$sql = str_replace(' INNER JOIN ', "\n\bINNER JOIN\b ", $sql);
-		$sql = str_replace(' LEFT JOIN ', "\n\bLEFT JOIN\b ", $sql);
+		$sql = str_replace(' FROM ', "\n{$depth}\bFROM\b ", $sql);
+		$sql = str_replace(' INNER JOIN ', "\n{$depth}\bINNER JOIN\b ", $sql);
+		$sql = str_replace(' LEFT JOIN ', "\n{$depth}\bLEFT JOIN\b ", $sql);
 		$sql = str_replace(' ON ', " \bON\b ", $sql);
 		$sql = str_replace(' OR ', " \bOR\b ", $sql);
-		$sql = str_replace(') AND (', ")\n\bAND\b (", $sql);
-		$sql = str_replace(' AND ', "\n\bAND\b ", $sql);
-		$sql = str_replace(' WHERE ', "\n\bWHERE\b ", $sql);
-		$sql = str_replace(' GROUP BY', "\n\bGROUP BY\b", $sql);
-		$sql = str_replace(' ORDER BY', "\n\bORDER BY\b", $sql);
-		$sql = str_replace(' WHERE ', "\n\bWHERE\b ", $sql);
-		$sql = str_replace(' LIMIT ', "\n\bLIMIT\b ", $sql);
+		$sql = str_replace(') AND (', ")\n{$depth}\bAND\b (", $sql);
+		$sql = str_replace(' AND ', "\n{$depth}\bAND\b ", $sql);
+		$sql = str_replace(' WHERE ', "\n{$depth}\bWHERE\b ", $sql);
+		$sql = str_replace(' GROUP BY', "\n{$depth}\bGROUP BY\b", $sql);
+		$sql = str_replace(' ORDER BY', "\n{$depth}\bORDER BY\b", $sql);
+		$sql = str_replace(' WHERE ', "\n{$depth}\bWHERE\b ", $sql);
+		$sql = str_replace(' LIMIT ', "\n{$depth}\bLIMIT\b ", $sql);
 		$sql = str_replace(' OFFSET ', " \bOFFSET\b ", $sql);
 		$sql = str_replace(' DESC', " \bDESC\b", $sql);
 		$sql = str_replace(' IS ', " \bIS\b ", $sql);

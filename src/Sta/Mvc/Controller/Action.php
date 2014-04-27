@@ -77,4 +77,9 @@ abstract class Action
     {
         return $this->getController()->getResponse();
     }
+
+    public function getEm()
+    {
+        return $this->getController()->getEntityManager();
+    }
 }

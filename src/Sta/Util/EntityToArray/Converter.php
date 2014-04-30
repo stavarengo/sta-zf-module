@@ -48,7 +48,7 @@ class Converter
 	{
 		$options       = $this->getOptions();
 		$em            = $this->em;
-		$entityClass   = get_class($entity);
+		$entityClass   = \App\Entity\AbstractEntity::getClass($entity);
 		$classMetadata = $em->getClassMetadata($entityClass);
         $entityName    = $this->_getEntityName($entity);
 		$fieldMappings = $classMetadata->fieldMappings;

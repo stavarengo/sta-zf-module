@@ -84,7 +84,7 @@ class EntityToArray
 	{
 		/** @var $converter EntityToArray\ConverterInterface */
 		$converter = null;
-		$reflectionClass = \Sta\ReflectionClass::factory($entity);
+		$reflectionClass = \App\Entity\AbstractEntity::getReflectionClass($entity);
 		/** @var $anno \Sta\Util\EntityToArray\Annotation */
 		if ($anno = $reflectionClass->getClassAnnotation('\Sta\Util\EntityToArray\Annotation')) {
 			$converter = new $anno->class;

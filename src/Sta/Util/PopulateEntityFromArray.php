@@ -89,7 +89,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	{
 		/** @var $entityManager EntityManager */
 		$entityManager = $this->serviceManager->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        $thisEntityClass = get_class($entity);
+        $thisEntityClass = \App\Entity\AbstractEntity::getClass($entity);
         $classMetadata = $entityManager->getClassMetadata($thisEntityClass);
 		$fieldMappings = $classMetadata->fieldMappings;
 		foreach ($fieldMappings as $field => $fieldDefinition) {

@@ -89,10 +89,10 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		$this->em          = \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		$this->value       = $value;
 		$this->entity      = $value->entity;
-		$this->entityClass = get_class($this->entity);
+		$this->entityClass = \App\Entity\AbstractEntity::getClass($this->entity);
 		$this->entityName  = $this->entityClass;
 
-		$refClass                          = \Sta\ReflectionClass::factory($value->entity);
+		$refClass                          = \App\Entity\AbstractEntity::getReflectionClass($value->entity);
 		$this->annoWithCompany             = $refClass->getClassAnnotation('App\Entity\Annotation\WithCompanyOwner');
 		$this->sharingForbidden            = $refClass->getClassAnnotation('App\Entity\Annotation\SharingForbidden');
 		$this->idDasEmpresasCompartilhando = array();
@@ -205,7 +205,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			$attributeValue = $this->entity->get($attributeName);
 
 			if ($attributeValue instanceof AbstractEntity) {
-				if (!$this->em->getRepository(get_class($attributeValue))->find((int)$attributeValue->getId())) {
+				if (!$this->em->getRepository(\App\Entity\AbstractEntity::getClass($attributeValue))->find((int)$attributeValue->getId())) {
 					// Está verificando a duplicidade de valores em uma coluna FK (que aponta para outra tabela),
 					// porém o registro da outra tabela ainda não existe, então com certesa esta coluna não está duplicada.
 					// O regsitro da outra tabela pode não existir quando ainda não foi invocado EntityManager::flush().

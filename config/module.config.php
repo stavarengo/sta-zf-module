@@ -22,6 +22,7 @@ return array(
 	'service_manager' => array(
 		'invokables' => array(
 			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponse', 
+			'Sta\Util\MobileDetect' => 'Sta\Util\MobileDetect', 
 		),
 		'factories' => array(
 			'Sta\Util\EntityToArray' => 'Sta\Util\EntityToArray\Factory', 

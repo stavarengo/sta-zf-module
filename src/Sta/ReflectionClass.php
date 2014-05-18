@@ -164,7 +164,11 @@ class ReflectionClass
 			$staConf       = $conf['sta'];
             $cache = $staConf['ReflectionClass']['cache'];
             if ($cache && !is_object($cache)) {
-                $cache = new $cache;
+                if ($cache == 'filesystem') {
+                    $cache = new \Doctrine\Common\Cache\FilesystemCache($staConf['ReflectionClass']['cacheDir'], 'sta.ref.class');
+                } else {
+                    $cache = new $cache;
+                }
             }
             self::$_reader = new Annotations\CachedReader(
 				new Annotations\IndexedReader(self::$_reader),

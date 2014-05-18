@@ -44,7 +44,8 @@ return array(
 		'customDoctrineTypes' => true,
 
 		'ReflectionClass' => array(
-			'cache' => new \Doctrine\Common\Cache\FilesystemCache(__DIR__ . '/../../../data/cache/StaReflectionClass', 'sta.ref.class'),
+			'cache' => 'filesystem',
+            'cacheDir' => __DIR__ . '/../../../data/cache/StaReflectionClass',
 		),
 	),
 );

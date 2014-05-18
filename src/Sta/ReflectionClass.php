@@ -162,10 +162,14 @@ class ReflectionClass
 			self::$_reader = new Annotations\AnnotationReader;
 			$conf          = \Sta\Module::getServiceLocator()->get('Configuration');
 			$staConf       = $conf['sta'];
-			self::$_reader = new Annotations\CachedReader(
+            $cache = $staConf['ReflectionClass']['cache'];
+            if ($cache && !is_object($cache)) {
+                $cache = new $cache;
+            }
+            self::$_reader = new Annotations\CachedReader(
 				new Annotations\IndexedReader(self::$_reader),
-				$staConf['ReflectionClass']['cache'],
-				$staConf['isLocal']()
+                $cache,
+                \App\IsLocal::is()
 			);
 		}
 		return self::$_reader;

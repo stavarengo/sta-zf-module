@@ -7,8 +7,6 @@
  
 namespace Sta\Entity;
 
-use App\Model\QueryResult\InvalidArgument;
-
 abstract class AbstractQueryResult
 {
 
@@ -32,7 +30,7 @@ abstract class AbstractQueryResult
             return $this->$method();
         }
 
-        throw new InvalidArgument('Não existe um método para retornar o valor do atributo: "'
+        throw new \Sta\Entity\Exception\InvalidArgument('Não existe um método para retornar o valor do atributo: "'
             . $attributeName . '"');
     }
 
@@ -51,7 +49,7 @@ abstract class AbstractQueryResult
             return;
         }
 
-        throw new InvalidArgument('Não existe um método para definir o valor do atributo: "'
+        throw new \Sta\Entity\Exception\InvalidArgument('Não existe um método para definir o valor do atributo: "'
             . $attributeName . '"');
     }
 } 

@@ -9,5 +9,5 @@ namespace Sta\Entity;
 
 class ValidationException extends \Sta\Exception
 {
-
+    protected $code = 422;
 } 

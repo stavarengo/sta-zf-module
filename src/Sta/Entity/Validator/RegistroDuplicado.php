@@ -19,8 +19,8 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::ENTIDADE_DUPLICADA                          => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas: %empresasConsideradas%',
-		self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA => 'Registro duplicado. Já existe outra entidade "%entityName%" com os valores: %valores%. Considerando as empresas todas as empresas (entidade não permite compartilhamento).',
+		self::ENTIDADE_DUPLICADA                          => 'Duplicate record. There is already another entity "%entityName%" with values​: %valores%​​. Considering companies: %empresasConsideradas%',
+		self::ENTIDADE_DUPLICADA_SEM_EMPRESA_PROPRIETARIA => 'Duplicate record. There is already another entity "%entityName%" with values​: %valores%​​.',
 	);
 	/**
 	 * @var RegistroDuplicadoValue

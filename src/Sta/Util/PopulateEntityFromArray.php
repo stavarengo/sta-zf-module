@@ -130,7 +130,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 			$datetimeTypes = array('datetime', 'date', 'time');
 			if (in_array($fieldType, $datetimeTypes)) {
 				$config      = $this->serviceManager->getServiceLocator()->get('config');
-				$defTz       = $config['webapp']['datetime']['deftault-timezone'];
+				$defTz       = new \DateTimeZone($config['webapp']['datetime']['deftault-timezone']);
 				$fieldFormat = $config['webapp']['datetime'][$fieldType];
 
 				$originalValue = $value;

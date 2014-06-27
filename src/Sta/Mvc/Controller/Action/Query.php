@@ -103,7 +103,7 @@ abstract class Query extends Action
 			$codigo = 200; //Estou retornando todos os registros possíveis para esta consulta
 		}
 
-		return $this->getController()->getConfiguredResponse($codigo, $retorno, $responseHeaders);
+		return $this->getConfiguredResponse($codigo, $retorno, $responseHeaders);
 	}
 
 	/**
@@ -161,5 +161,16 @@ abstract class Query extends Action
 
 		return $this->_sortDef;
 	}
+
+    /**
+     * @param $codigo
+     * @param $retorno
+     * @param $responseHeaders
+     * @return \Zend\Http\PhpEnvironment\Response
+     */
+    protected function getConfiguredResponse($codigo, $retorno, $responseHeaders)
+    {
+        return $this->getController()->getConfiguredResponse($codigo, $retorno, $responseHeaders);
+    }
 
 }

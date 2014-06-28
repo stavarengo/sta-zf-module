@@ -37,8 +37,33 @@ class Converter
 	 * @var ConverterOptions
 	 */
 	protected $options;
-	
-	/**
+
+    /**
+     * @param \Zend\ServiceManager\ServiceManager $serviceLocator
+     * @param \DateTime $dateTime
+     * @param string $selector
+     * @throws Exception\InvalidArgumentException
+     * @return mixed
+     */
+    public static function convertDateTimeToStr(ServiceManager $serviceLocator, \DateTime $dateTime, $selector = 'datetime')
+    {
+        $config          = $serviceLocator->get('config');
+        $dateTimeFormats = $config['webapp']['datetime'];
+        $format = null;
+        if ($selector == 'date') {
+            $format = $dateTimeFormats['date'];
+        } else if ($selector == 'time') {
+            $format = $dateTimeFormats['time'];
+        } else if ($selector == 'datetime') {
+            $format = $dateTimeFormats['datetime'];
+        } else {
+            throw new Exception\InvalidArgumentException('The parameter "$selector" should be one of "date", "time" or "datetime" values.');
+        }
+
+        return $dateTime->format($format);
+    }
+
+    /**
 	 * @param AbstractEntity $entity
 	 * @param ConverterOptions $options
 	 *
@@ -110,26 +135,25 @@ class Converter
 	
 	protected function _convertFieldValue($fieldValue, $fieldType)
 	{
-		$config          = $this->serviceLocator->get('config');
-		$dateTimeFormats = $config['webapp']['datetime'];
 		$em              = $this->em;
 		$returnValue     = null;
 
 		if ($fieldValue !== null) {
 			if (is_object($fieldValue)) {
 				if ($fieldValue instanceof \DateTime) {
-					$format = null;
+					$selector = null;
 					if ($fieldType == DateType::DATE) {
-						$format = $dateTimeFormats['date'];
+						$selector = 'date';
 					} else if ($fieldType == TimeType::TIME) {
-						$format = $dateTimeFormats['time'];
+						$selector = 'time';
 					} else if ($fieldType == DateTimeType::DATETIME) {
-						$format = $dateTimeFormats['datetime'];
+						$selector = 'datetime';
 					} else if ($fieldType == DateTimeTzType::DATETIMETZ) {
-						$format = $em->getConnection()->getDatabasePlatform()->getDateTimeTzFormatString();
+						$selector = 'datetime';
+//						$format = $em->getConnection()->getDatabasePlatform()->getDateTimeTzFormatString();
 					}
-					if ($format !== null) {
-						$returnValue = $fieldValue->format($format);
+					if ($selector !== null) {
+                        $returnValue = self::convertDateTimeToStr($this->getServiceLocator(), $fieldValue, $selector);
 					}
 				} else {
 					$returnValue = $this->_convertSubEntities($fieldValue);

@@ -26,7 +26,7 @@ class Native implements SemaphoreInterface
 
 	public static function hasNativeSuporte()
 	{
-		return (function_exists('sem_ release') && function_exists('sem_get') && function_exists('sem_acquire'));
+		return (function_exists('sem_release') && function_exists('sem_get') && function_exists('sem_acquire'));
 	}
 
 	/**

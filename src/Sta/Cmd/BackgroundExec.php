@@ -37,11 +37,10 @@ class BackgroundExec implements Command
 		if (substr(php_uname(), 0, 7) == "Windows") {
 			$prio = $this->getIntPrioToWinPrio($this->prioridade);
 			$cmd  = "start $prio " . ($this->hide === true ? '/B' : '') . " $this->cmd";
-			pclose(popen($cmd, "r"));
 		} else {
 			$cmd = $this->cmd . " > /dev/null &";
 		}
-		Invoker::invoke(new ShellExec($cmd));
+        Invoker::invoke(new ShellExec($cmd));
 	}
 
 	private function getIntPrioToWinPrio($prio)

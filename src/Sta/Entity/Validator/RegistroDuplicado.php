@@ -3,7 +3,7 @@ namespace Sta\Entity\Validator;
 
 use App\Entity\Annotation\SharingForbidden;
 use App\Entity\Annotation\WithCompanyOwner;
-use App\Entity\Empresa;
+use App\Entity\Company;
 use App\Model\CompartilhamentosEmpresas;
 use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
@@ -110,7 +110,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
             if ($empresaProprietaria) {
                 $empresasQueCompartilhamEstaEntidade = $modelCompartilhamentosEmpresas->getCompaniesThatShareThisEntityWithMe($empresaProprietaria, $this->entityClass);
             }
-			/** @var $row Empresa */
+			/** @var $row Company */
 			foreach ($empresasQueCompartilhamEstaEntidade as $row) {
 				$this->idDasEmpresasCompartilhando[] = $row->getId();
 				$empresasConsideradas[]              = $row->getId() . '-' . $row->getPessoa()->getFantasiaOuRazao();
@@ -273,7 +273,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		}
 
 		if (count($this->idDasEmpresasCompartilhando)) {
-			/** @var $emp Empresa */
+			/** @var $emp Company */
 			$emp = $otherEntity->get($this->annoWithCompany->attrName);
 			if (in_array($emp->getId(), $this->idDasEmpresasCompartilhando)) {
 				return true;

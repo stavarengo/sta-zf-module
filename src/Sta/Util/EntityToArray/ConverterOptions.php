@@ -18,7 +18,7 @@ class ConverterOptions
 	/**
 	 * Quando true cada entidade estara relacionada a um atributo cujo nome é igual ao nome da entidade.
 	 * 
-	 * Ex: abaixo temos uma entidade Produto, e o valor deste parâmetro é false.
+	 * Ex: abaixo temos uma entidade Product, e o valor deste parâmetro é false.
 	 * <pre>
 	 *    array(
 	 *        'id' => 106,
@@ -34,12 +34,12 @@ class ConverterOptions
 	 * Agora, no exemplo abaixo, temos a mesma entidade exibida acima, porem o valor deste parametro é true.
 	 * <pre>
 	 *    array(
-	 *        'Produto' => array(
+	 *        'Product' => array(
 	 *            'id' => 106 ,
 	 *            'descricao' => 'Calça Masculina',
 	 *            'unidadeMedida' => array(
-	 *                '_en' => 'UnidadeMedida',
-	 *                'UnidadeMedida' => array(
+	 *                '_en' => 'Uom',
+	 *                'Uom' => array(
 	 *                    'id' => 15,
 	 *                    'nome' => 'Unidade',
 	 *                    'sigla' => 'UN',

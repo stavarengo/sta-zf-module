@@ -48,7 +48,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	protected $entityName;
 	/**
 	 * Usado apenas quando a entidade validada foi anotada com {@link \App\Entity\Annotation\WithCompanyOwner}.
-	 * Deve armazenar o ID das empresas que compartilham esta entidade, iclusive o ID da empresa da empresa
+	 * Deve armazenar o ID das empresas que compartilham esta entidade, iclusive o ID da company da company
 	 * relacionada com a entidade validada.
 	 * @var array
 	 */
@@ -100,7 +100,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 		if ($this->annoWithCompany && !$this->sharingForbidden) {
 			// Se a entidade aceita compartilhamentos, buscamos as empresas que compartilham esta entidade para 
 			// garantir que o registro não será duplicado mesmo entre as diferentes empresas que participam do 
-			// compartilhamento.
+			// sharing.
 
 			/** @var $modelCompartilhamentosEmpresas CompartilhamentosEmpresas */
 			$modelCompartilhamentosEmpresas = \Sta\Module::getServiceLocator()->get('Model\CompartilhamentosEmpresas');
@@ -113,7 +113,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			/** @var $row Company */
 			foreach ($empresasQueCompartilhamEstaEntidade as $row) {
 				$this->idDasEmpresasCompartilhando[] = $row->getId();
-				$empresasConsideradas[]              = $row->getId() . '-' . $row->getPessoa()->getFantasiaOuRazao();
+				$empresasConsideradas[]              = $row->getId() . '-' . $row->getPerson()->getFantasiaOuRazao();
 			}
 		}
 		$this->empresasConsideradas = implode(', ', $empresasConsideradas);
@@ -267,7 +267,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 	private function pertenceAoCompartilhamento(AbstractEntity $otherEntity)
 	{
 		if (!$this->annoWithCompany || $this->sharingForbidden) {
-			// se esta empresa não permite compartilhamentos, nos retornamos true, pq qualquer registro é acessado
+			// se esta company não permite compartilhamentos, nos retornamos true, pq qualquer registro é acessado
 			// entre todas as empresas existentes.
 			return true;
 		}

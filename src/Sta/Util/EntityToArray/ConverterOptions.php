@@ -23,7 +23,7 @@ class ConverterOptions
 	 *    array(
 	 *        'id' => 106,
 	 *        'descricao' => 'Calça Masculina',
-	 *        'unidadeMedida' => array(
+	 *        'uom' => array(
 	 *            'id' => 15,
 	 *            'nome' => 'Unidade',
 	 *            'sigla' => 'UN',
@@ -37,7 +37,7 @@ class ConverterOptions
 	 *        'Product' => array(
 	 *            'id' => 106 ,
 	 *            'descricao' => 'Calça Masculina',
-	 *            'unidadeMedida' => array(
+	 *            'uom' => array(
 	 *                '_en' => 'Uom',
 	 *                'Uom' => array(
 	 *                    'id' => 15,

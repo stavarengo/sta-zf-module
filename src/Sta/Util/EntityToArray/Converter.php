@@ -262,7 +262,7 @@ class Converter
 	{
 		return array(
 			'depth'        => $this->getRequest()->getQuery('depth', 0),
-			'noEntityName' => $this->getRequest()->getQuery('noEntityName', true),
+			'noEntityName' => $this->getRequest()->getQuery('noEntityName', false),
 		);
 	}
     

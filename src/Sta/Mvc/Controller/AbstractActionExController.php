@@ -40,7 +40,7 @@ class AbstractActionExController extends AbstractActionController
             return parent::onDispatch($e);
         }
 
-        $actionResponse = Action::invoke($method);
+        $actionResponse = Action::invoke($this);
 
         $e->setResult($actionResponse);
 

@@ -24,5 +24,11 @@ return array(
                 return ($hostname == 'local.grands.sell');
             }
         },
+        
+        'entityToArray-converter' =>array(
+            'defaults' =>array(
+                'noEntityName' => false,
+            ),
+        ),
 	),
 );

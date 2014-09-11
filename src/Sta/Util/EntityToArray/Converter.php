@@ -260,9 +260,14 @@ class Converter
 	 */
 	protected function getDefaultOptionsValues()
 	{
+        $config = $this->getServiceLocator()->get('config');
+        if (isset($config['sta']['entityToArray-converter']['defaults']['noEntityName'])) {
+            $noEntityName = $config['sta']['entityToArray-converter']['defaults']['noEntityName'];
+        }
+        
 		return array(
 			'depth'        => $this->getRequest()->getQuery('depth', 0),
-			'noEntityName' => $this->getRequest()->getQuery('noEntityName', false),
+			'noEntityName' => $this->getRequest()->getQuery('noEntityName', $noEntityName),
 		);
 	}
     

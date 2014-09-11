@@ -63,6 +63,9 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 */
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
+        if (! $serviceLocator instanceof \Zend\ServiceManager\ServiceManager) {
+            $serviceLocator = $serviceLocator->getServiceLocator();
+        }
 		$this->serviceManager = $serviceLocator;
 	}
 
@@ -88,7 +91,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	private function _populate(array $entityData, AbstractEntity $entity, array $options = array())
 	{
 		/** @var $entityManager EntityManager */
-		$entityManager = $this->serviceManager->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		$entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
         $thisEntityClass = \App\Entity\AbstractEntity::getClass($entity);
         $classMetadata = $entityManager->getClassMetadata($thisEntityClass);
 		$fieldMappings = $classMetadata->fieldMappings;
@@ -129,7 +132,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 			$fieldType     = $fieldDefinition['type'];
 			$datetimeTypes = array('datetime', 'date', 'time');
 			if (in_array($fieldType, $datetimeTypes)) {
-				$config      = $this->serviceManager->getServiceLocator()->get('config');
+				$config      = $this->serviceManager->get('config');
 				$defTz       = new \DateTimeZone($config['webapp']['datetime']['deftault-timezone']);
 				$fieldFormat = $config['webapp']['datetime'][$fieldType];
 

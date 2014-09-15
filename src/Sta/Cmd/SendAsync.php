@@ -19,8 +19,8 @@ class SendAsync implements Command
     {
         $cmd = 'php -f "' . $this->phpScriptFile . '" ';
         
-        foreach ($this->args as $arg) {
-            $cmd .= $arg . " ";
+        foreach ($this->args as $key => $arg) {
+            $cmd .= (is_int($key) ? '' : $key . '=') . $arg . " ";
         }
 
         return Invoker::invoke(new BackgroundExec($cmd));

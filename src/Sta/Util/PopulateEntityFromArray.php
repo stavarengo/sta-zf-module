@@ -158,7 +158,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 					if (!$value) {
 						throw new PopulateEntityFromArrayException('Formato de data/hora inválido para o atributo "'
 							. $fieldName . '". Valo recebido: "' . $originalValue . '". Formato esperado: "' . $fieldFormat
-							. '" - Ex: ' . $agora->format($fieldFormat) . '.');
+							. '" - Ex: ' . $agora->format($fieldFormat) . '.', 400);
 					}
 				}
 				$value->setTimezone($defTz);

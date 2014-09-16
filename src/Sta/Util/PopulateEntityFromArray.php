@@ -63,7 +63,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 */
 	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
 	{
-        if (! $serviceLocator instanceof \Zend\ServiceManager\ServiceManager) {
+        if (method_exists($serviceLocator, 'getServiceLocator')) {
             $serviceLocator = $serviceLocator->getServiceLocator();
         }
 		$this->serviceManager = $serviceLocator;

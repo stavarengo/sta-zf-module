@@ -36,7 +36,7 @@ class AbstractActionExController extends AbstractActionController
         
         $method = static::getMethodFromAction($action);
 
-        if (!method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             return parent::onDispatch($e);
         }
 

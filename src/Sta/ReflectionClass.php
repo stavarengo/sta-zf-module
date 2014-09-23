@@ -132,7 +132,10 @@ class ReflectionClass
 		return $this->getReader()->getMethodAnnotation($this->getRefMethod($method), $annotationName);
 	}
 
-	private function getRefClass()
+    /**
+     * @return PhpReflectionClass
+     */
+    public function getRefClass()
 	{
 		if (!isset(self::$_cache['class'][$this->className])) {
 			self::$_cache['class'][$this->className] = new PhpReflectionClass($this->className);
@@ -140,7 +143,11 @@ class ReflectionClass
 		return self::$_cache['class'][$this->className];
 	}
 
-	private function getRefProperty($property)
+    /**
+     * @param $property
+     * @return \ReflectionProperty
+     */
+    public function getRefProperty($property)
 	{
 		if (!isset(self::$_cache['property'][$this->className][$property])) {
 			self::$_cache['property'][$this->className][$property] = new \ReflectionProperty($this->className, $property);
@@ -148,7 +155,11 @@ class ReflectionClass
 		return self::$_cache['property'][$this->className][$property];
 	}
 
-	private function getRefMethod($method)
+    /**
+     * @param $method
+     * @return \ReflectionMethod
+     */
+    public function getRefMethod($method)
 	{
 		if (!isset(self::$_cache['method'][$this->className][$method])) {
 			self::$_cache['method'][$this->className][$method] = new \ReflectionMethod($this->className, $method);
@@ -156,7 +167,10 @@ class ReflectionClass
 		return self::$_cache['method'][$this->className][$method];
 	}
 
-	private function getReader()
+    /**
+     * @return Annotations\CachedReader
+     */
+    private function getReader()
 	{
 		if (!self::$_reader) {
 			self::$_reader = new Annotations\AnnotationReader;

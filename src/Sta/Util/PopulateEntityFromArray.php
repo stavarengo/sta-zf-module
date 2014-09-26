@@ -103,24 +103,28 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 		$associationMappings = $classMetadata->associationMappings;
 		foreach ($associationMappings as $field => $fieldDefinition) {
 			if (array_key_exists($field, $entityData)) {
-				$targetEntity  = $fieldDefinition['targetEntity'];
-				$associationId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
                 $entityAssociated = null;
-                if ($associationId !== null) {
-                    $qb = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
-                    $qb->select('a');
-                    $qb->where('a.id = ?1');
-                    $qb->setParameter(1, $associationId);
-                    $q = $qb->getQuery();
-    //				$q->setFetchMode($targetEntity, $field,  ClassMetadata::FETCH_EAGER);
-    //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
-    //				$q->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, true);
-                    // @TODO Tem que fazer esta query buscar apenas o ID do objeto para melhorar a perfomance
-                    if (!$entityAssociated = $q->getOneOrNullResult()) {
-                        throw new PopulateEntityFromArrayException('Valor do atributo do atributo "' . $field . '" não é ' .
-                            'válido. Não existe uma uma entidade "' . $targetEntity . '" com ID "' . $associationId . '".');
+                if ($entityData[$field] instanceof AbstractEntity) {
+                    $entityAssociated = $entityData[$field];
+                } else {
+                    $targetEntity  = $fieldDefinition['targetEntity'];
+                    $associationId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
+                    if ($associationId !== null) {
+                        $qb = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
+                        $qb->select('a');
+                        $qb->where('a.id = ?1');
+                        $qb->setParameter(1, $associationId);
+                        $q = $qb->getQuery();
+        //				$q->setFetchMode($targetEntity, $field,  ClassMetadata::FETCH_EAGER);
+        //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
+        //				$q->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, true);
+                        // @TODO Tem que fazer esta query buscar apenas o ID do objeto para melhorar a perfomance
+                        if (!$entityAssociated = $q->getOneOrNullResult()) {
+                            throw new PopulateEntityFromArrayException('Valor do atributo do atributo "' . $field . '" não é ' .
+                                'válido. Não existe uma uma entidade "' . $targetEntity . '" com ID "' . $associationId . '".');
+                        }
                     }
-                }
+                } 
                 $this->_setValueToEntity($entity, $field, $fieldDefinition, $entityAssociated);
 			}
 		}

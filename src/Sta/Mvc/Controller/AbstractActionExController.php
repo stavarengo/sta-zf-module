@@ -46,5 +46,10 @@ class AbstractActionExController extends AbstractActionController
 
         return $actionResponse;
     }
-    
+
+    public function indexAction()
+    {
+        return Action::invoke($this);
+    }
+
 }

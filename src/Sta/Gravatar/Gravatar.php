@@ -24,6 +24,7 @@ class Gravatar
 
     /**
      * @param $email
+     *      Só é usado se o $pictureType for 'random'
      * @param $size
      * @param string $pictureType
      *      Veja aqui: https://en.gravatar.com/site/implement/images/

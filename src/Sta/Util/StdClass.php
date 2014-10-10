@@ -54,4 +54,47 @@ class StdClass
         throw new StdClassInvalidArgument('Não existe um método para retornar o valor do atributo: "'
             . $attributeName . '"');
     }
-} 
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->_toArray($this);
+    }
+
+    /**
+     * @param $value
+     * @return array
+     */
+    private function _toArray($value)
+    {
+        $result = array();
+        if (is_object($value) || is_array($value)) {
+            $isMyOwnInstance = false;
+            if (is_object($value)) {
+                $vars            = get_object_vars($value);
+                $isMyOwnInstance = ($value instanceof StdClass);
+            } else {
+                $vars = $value;
+            }
+            foreach ($vars as $var => $val) {
+                try {
+                    if ($isMyOwnInstance) {
+                        $val = $this->get($var);
+                    }
+                } catch (StdClassInvalidArgument $e) {
+                    // Ignora essa propiedade se ela não tiver um método get definido.
+                    continue;
+                }
+
+                if (is_object($val) || is_array($val)) {
+                    $val = $this->_toArray($val);
+                }
+                $result[$var] = $val;
+            }
+        }
+
+        return $result;
+    }
+}

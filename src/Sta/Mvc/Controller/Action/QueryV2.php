@@ -1,6 +1,7 @@
 <?php
 namespace Sta\Mvc\Controller\Action;
 
+use App\Entity\AbstractEntity;
 use Doctrine\ORM\QueryBuilder;
 use Sta\Mvc\Controller\Action;
 
@@ -47,17 +48,36 @@ abstract class QueryV2 extends Query
 	 */
 	protected function fetchAll(array $sortDef, $count = null, $offset = null)
 	{
-		$query = $this->getQueryBuild()->getQuery();
-
-		$query->setMaxResults($count);
-		$query->setFirstResult($offset);
-		
-		$entidades = $query->getResult();
+		$entidades = $this->fetchAllEntities($sortDef, $count, $offset);
 		$entidades = $this->getController()->entityToArray($entidades, array(
 			'depth' => $this->getController()->getParam('depth'),
 			'noEntityName' => $this->getController()->getParam('noEntityName', false),
 		));
 		return $entidades;
+	}
+    
+	/**
+	 * É o mesmo que {@link #fetchAll() }, porem retorna as entidades em forma de objeto ao inves de converter para 
+     * array.
+     * 
+     * Este é apenas um método helper para que as subclasses possam usar as entidades retornadas antes delas serem 
+     * convertidas para um array pelo método {@link #fetchAll() }. 
+	 *
+	 * @param array $sortDef
+	 *        Terá o mesmo formado do retorno do método {@link Query::getSortDef() }
+	 * @param int $count
+	 * @param int $offset
+	 *
+	 * @return AbstractEntity[]
+	 */
+	protected function fetchAllEntities(array $sortDef, $count = null, $offset = null)
+	{
+		$query = $this->getQueryBuild()->getQuery();
+
+		$query->setMaxResults($count);
+		$query->setFirstResult($offset);
+		
+		return $query->getResult();
 	}
 
 	/**

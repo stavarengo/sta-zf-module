@@ -28,6 +28,7 @@ return array(
         'entityToArray-converter' =>array(
             'defaults' =>array(
                 'noEntityName' => false,
+                'depth' => 0,
             ),
         ),
 	),

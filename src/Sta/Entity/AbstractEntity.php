@@ -34,7 +34,12 @@ abstract class AbstractEntity
 	 */
 	protected $id;
 
-	/**
+    public static function className()
+    {
+        return get_called_class();
+    }
+
+    /**
      * @ignore
 	 * @return EntityManager
 	 */

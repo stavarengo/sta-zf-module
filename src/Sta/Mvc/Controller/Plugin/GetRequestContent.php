@@ -11,9 +11,9 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 class GetRequestContent extends AbstractPlugin
 {
 
-	public function __invoke()
+	public function __invoke($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY)
 	{
-		return $this->getRequestContent();
+		return $this->getRequestContent($objectDecodeType);
 	}
 
 	/**
@@ -22,7 +22,7 @@ class GetRequestContent extends AbstractPlugin
 	 * @throws GetRequestContentException
 	 * @return array
 	 */
-	public function getRequestContent()
+	public function getRequestContent($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY)
 	{
 		/** @var $request Request */
 		$request = $this->getController()->getRequest();
@@ -34,7 +34,7 @@ class GetRequestContent extends AbstractPlugin
 			if ($format == 'xml') {
 				@$data = \Zend\Json\Json::fromXml($data, false);
 			}
-			$data = \Zend\Json\Json::decode($data, \Zend\Json\Json::TYPE_ARRAY);
+			$data = \Zend\Json\Json::decode($data, $objectDecodeType);
 		} catch (\Exception $e) {
 			throw new GetRequestContentException("O conteúdo da requisição deve ser uma string $formatUpper válida.");
 		}

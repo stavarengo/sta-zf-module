@@ -90,8 +90,8 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 */
 	private function _populate(array $entityData, AbstractEntity $entity, array $options = array())
 	{
-		/** @var $entityManager EntityManager */
-		$entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->_getEm();
+
         $thisEntityClass = \App\Entity\AbstractEntity::getClass($entity);
         $classMetadata = $entityManager->getClassMetadata($thisEntityClass);
 		$fieldMappings = $classMetadata->fieldMappings;
@@ -108,20 +108,13 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
                     $entityAssociated = $entityData[$field];
                 } else {
                     $targetEntity  = $fieldDefinition['targetEntity'];
-                    $associationId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
-                    if ($associationId !== null) {
-                        $qb = $entityManager->getRepository($targetEntity)->createQueryBuilder('a');
-                        $qb->select('a');
-                        $qb->where('a.id = ?1');
-                        $qb->setParameter(1, $associationId);
-                        $q = $qb->getQuery();
-        //				$q->setFetchMode($targetEntity, $field,  ClassMetadata::FETCH_EAGER);
-        //				$q->setHydrationMode(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD);
-        //				$q->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, true);
-                        // @TODO Tem que fazer esta query buscar apenas o ID do objeto para melhorar a perfomance
-                        if (!$entityAssociated = $q->getOneOrNullResult()) {
+                    $associatedEntityOrId = $this->_getAssociationId($entityData, $field, $targetEntity, $options);
+                    if ($associatedEntityOrId instanceof AbstractEntity) {
+                        $entityAssociated = $associatedEntityOrId;
+                    } else if ($associatedEntityOrId !== null) {
+                        if (!$entityAssociated = $entityManager->find($targetEntity, $associatedEntityOrId)) {
                             throw new PopulateEntityFromArrayException('Valor do atributo do atributo "' . $field . '" não é ' .
-                                'válido. Não existe uma uma entidade "' . $targetEntity . '" com ID "' . $associationId . '".');
+                                'válido. Não existe uma uma entidade "' . $targetEntity . '" com ID "' . $associatedEntityOrId . '".');
                         }
                     }
                 } 
@@ -176,11 +169,35 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	{
 		$associationData = $entityData[$associationField];
 		$entityName      = basename(str_replace('\\', DIRECTORY_SEPARATOR, $targetEntityClassName));
-		if (is_array($associationData) && array_key_exists($entityName, $associationData)) {
-			if (array_key_exists('id', $associationData[$entityName])) {
-				return $associationData[$entityName]['id'];
+		if (is_array($associationData)) {
+            $theData = $associationData;
+            if (array_key_exists($entityName, $associationData)) {
+                $theData = $associationData[$entityName];
+            }
+            $associationEntity = null;
+			if (array_key_exists('id', $theData)) {
+                if ($associationEntity = $this->_getEm()->find($targetEntityClassName, $theData['id'])) {
+                    unset($theData['id']);
+                }
 			}
+            if (!$associationEntity) {
+                $associationEntity = new $targetEntityClassName;
+            }
+            
+            $this->_populate($theData, $associationEntity, $options);
+            return $associationEntity;
 		}
 		return $associationData;
 	}
+
+    /**
+     * @return EntityManager
+     */
+    private function _getEm()
+    {
+        /** @var $entityManager EntityManager */
+        $entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
+
+        return $entityManager;
+    }
 }

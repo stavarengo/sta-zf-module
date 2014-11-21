@@ -33,25 +33,14 @@ class Uploader
     }
 
     /**
-     * @param $uploaderType
-     *      Use uma das constantes {@link \Sta\Uploader\UploaderController}::UPLOADER_TYPE_*
-     *
      * @param Options $options
-     * @throws InvalidUploaderTypeException
+     * @throws \NoFilesFoundException
      * @throws \Exception
      * @return Result[]
+     *      Nunca será um array vazio e terá tantas entradas quantos são os arquivos recebidos.
      */
-    public function upload($uploaderType, Options $options)
+    public function upload(Options $options)
     {
-        $suportedUploadersTypes = array(
-            self::UPLOADER_TYPE_FLASH,
-            self::UPLOADER_TYPE_HTML5,
-            self::UPLOADER_TYPE_IFRAME
-        );
-        if (!in_array($uploaderType, $suportedUploadersTypes)) {
-            throw new InvalidUploaderTypeException("Invalid value for the parameter \"$uploaderType\".");
-        }
-
         $this->logger->debug(self::TAG . "Iniciou. Conteúdo de \$_FILE = " . print_r($_FILES, true));
         $keyOneFile       = $options->getKeyOneFile();
         $keyMultipleFiles = $options->getKeyMultipleFiles();
@@ -94,7 +83,7 @@ class Uploader
             $this->logger->err(self::TAG . "Exceção: \n$e");
             throw $e;
         }
-        
+
         return $r;
     }
 
@@ -109,7 +98,8 @@ class Uploader
     private function handleUpload(File $file, Options $options)
     {
         $dir     = $options->getDir();
-        $destDir = $this->getDirPath($dir, $options->getDirLevel());
+        $subDir = $this->getSubDir($options->getDirLevel());
+        $destDir = $dir . DIRECTORY_SEPARATOR . $subDir;
 
         $this->prepareDirectoryStructure($destDir);
 
@@ -131,6 +121,7 @@ class Uploader
         $validators     = $options->getValidators();
         $realUploadFile = $file->getTempName();
         $erros          = array();
+        $msg            = '';
         foreach ($validators as $validator) {
             $msg = "Aplicando regras do validador '" . get_class($validator) . "'. ";
             if (!$validator->isValid($realUploadFile, $file)) {
@@ -144,11 +135,14 @@ class Uploader
                 $msg .= " VALIDAÇÃO APROVADA!\n";
             }
         }
-        $this->logger->debug(self::TAG . $msg);
+        if ($msg) {
+            $this->logger->debug(self::TAG . $msg);
+        }
 
         $result = new Result();
         $result->setReceivedFile($file);
         $result->setFinalFileName($newFilePath);
+        $result->setSubDir($subDir);
 
         if (count($erros) > 0) {
             $result->setError(implode('\n', $erros));
@@ -189,23 +183,22 @@ class Uploader
     /**
      * Retorna o caminho completo do diretorio já com os subdiretorios de acordo com quantidade de niveis necessário.
      *
-     * @param $destDir
      * @param $dirLevels
      * @return string
      */
-    protected function getDirPath($destDir, $dirLevels)
+    protected function getSubDir($dirLevels)
     {
-        $destDir .= DIRECTORY_SEPARATOR;
+        $subDir = '';
 
         if ($dirLevels > 0) {
             // create up to 256 directories per directory level
             $hash = md5(time());
             for ($i = 0, $max = ($dirLevels * 2); $i < $max; $i += 2) {
-                $destDir .= $hash[$i] . $hash[$i + 1] . DIRECTORY_SEPARATOR;
+                $subDir .= $hash[$i] . $hash[$i + 1] . DIRECTORY_SEPARATOR;
             }
         }
 
-        return $destDir;
+        return $subDir;
     }
 
     /**

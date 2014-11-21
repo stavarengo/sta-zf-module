@@ -24,6 +24,11 @@ class Result extends \Sta\Util\StdClass
      */
     protected $finalFileName;
     /**
+     * Subdiretorios criados dentro da pasta destino do upload.
+     * @var string
+     */
+    protected $subDir;
+    /**
      * Uma string explicando o que aconteceu de errado.
      * Se for vazia, então não ocorreu erros.
      * @var string
@@ -125,4 +130,23 @@ class Result extends \Sta\Util\StdClass
         return $this->receivedFile;
     }
 
+    /**
+     * @param string $subDir
+     * @return $this
+     */
+    public function setSubDir($subDir)
+    {
+        $this->subDir = $subDir;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubDir()
+    {
+        return $this->subDir;
+    }
+    
 } 

@@ -33,6 +33,8 @@ class Uploader
     }
 
     /**
+     * Verifica se existe algum arquivo na $_FILES e move eles para o diretorio destino.
+     * 
      * @param Options $options
      * @throws \NoFilesFoundException
      * @throws \Exception

@@ -96,7 +96,7 @@ class Converter
 			$return[$fieldName] = $this->_convertFieldValue($fieldValue, null);
 		}
         
-        $return = $this->processEntityArray($return);
+        $return = $this->processEntityArray($return, $entity);
 		if ($noEntityName == false) {
 			$return = array('_en' => $entityName, $entityName => $return);
 		}
@@ -105,12 +105,13 @@ class Converter
 
     /**
      * As subclasses podem sobrescrever este método.
-     * @param array $entity
+     * @param array $entityData
+     * @param \Sta\Entity\AbstractEntity $entity
      * @return array
      */
-    protected function processEntityArray(array $entity)
+    protected function processEntityArray(array $entityData, \Sta\Entity\AbstractEntity $entity)
     {
-        return $entity;
+        return $entityData;
     }
     
 	/**

@@ -71,7 +71,7 @@ class File extends \Sta\Util\StdClass
                 array(
                     'name'     => $file['name'],
                     'type'     => $file['type'],
-                    'tempPath' => $file['tmp_name'],
+                    'tempName' => $file['tmp_name'],
                     'size'     => $file['size'],
                     'error'    => $file['error'],
                 )
@@ -81,6 +81,21 @@ class File extends \Sta\Util\StdClass
         return $result;
     }
 
+    /**
+     * Retorna os dados desta instancia em um array igual ao valor que estaria setado na variavel {@link $_FILES}
+     * @return array
+     */
+    public function toStandartPhpArray()
+    {
+        return array(
+            'type'     => $this->getType(),
+            'name'     => $this->getName(),
+            'tmp_name' => $this->getTempName(),
+            'size'     => $this->getSize(),
+            'error'    => $this->getError(),
+        );
+    }
+    
     /**
      * @param int $error
      * @return $this
@@ -142,7 +157,7 @@ class File extends \Sta\Util\StdClass
      * @param string $tempName
      * @return $this
      */
-    public function setTempPath($tempName)
+    public function setTempName($tempName)
     {
         $this->tempName = (string)$tempName;
 

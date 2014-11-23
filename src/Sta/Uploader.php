@@ -120,17 +120,22 @@ class Uploader
             $newFilePath = $destDir . DIRECTORY_SEPARATOR . $newFileName;
         } while (file_exists($newFilePath));
 
+        $fileAsStandartPhpArray = $file->toStandartPhpArray();
         $validators     = $options->getValidators();
         $realUploadFile = $file->getTempName();
-        $erros          = array();
+        $errors          = array();
         $msg            = '';
         foreach ($validators as $validator) {
             $msg = "Aplicando regras do validador '" . get_class($validator) . "'. ";
-            if (!$validator->isValid($realUploadFile, $file)) {
+            $validatorValue = $file->getTempName();
+//            if ($validator instanceof \Zend\Validator\File\Extension) {
+//                $validatorValue = $file->getName();
+//            }
+            if (!$validator->isValid($validatorValue, $fileAsStandartPhpArray)) {
                 $msg .= 'VALIDAÇÃO REPROVADA! Motivos: ';
                 foreach ($validator->getMessages() as $erro) {
                     $msg .= "\n\t$erro";
-                    $erros[] = $erro;
+                    $errors[] = $erro;
                 }
                 $msg .= "\n";
             } else {
@@ -146,8 +151,8 @@ class Uploader
         $result->setFinalFileName($newFilePath);
         $result->setSubDir($subDir);
 
-        if (count($erros) > 0) {
-            $result->setError(implode('\n', $erros));
+        if (count($errors) > 0) {
+            $result->setErrors($errors);
             $this->logger->debug(
                 self::TAG . "Saindo de 'handleUpdate'. Retorno: '" . Json::encode($result->toArray()) . "'"
             );
@@ -161,7 +166,7 @@ class Uploader
                 ErrorHandler::start();
                 if (!move_uploaded_file($realUploadFile, "$newFilePath")) {
                     $this->logger->debug(self::TAG . "Falha ao mover o arquivo '$realUploadFile' para '$newFilePath'");
-                    $result->setError($this->sl->get('translator')->translate('Failed to receive your file.', 'Sta'));
+                    $result->setErrors($this->sl->get('translator')->translate('Failed to receive your file.', 'Sta'));
                 } else {
                     $this->logger->debug(self::TAG . "Sucesso! Arquivo '$realUploadFile' movido para '$newFilePath'.");
                     $this->logger->debug(
@@ -171,7 +176,7 @@ class Uploader
                 ErrorHandler::stop();
             } catch (\Exception $e) {
                 $this->logger->debug(self::TAG . "Exceção em 'handleUpdate': \n$e\n\n");
-                $result->setError($e->getMessage());
+                $result->setErrors($e->getMessage());
                 $this->logger->debug(
                     self::TAG . "Saindo de 'handleUpdate'. Retorno: '" . Json::encode($result->toArray()) . "'"
                 );

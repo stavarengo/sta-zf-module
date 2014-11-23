@@ -31,9 +31,9 @@ class Result extends \Sta\Util\StdClass
     /**
      * Uma string explicando o que aconteceu de errado.
      * Se for vazia, então não ocorreu erros.
-     * @var string
+     * @var string[]
      */
-    protected $error;
+    protected $errors;
 
     public static function toString($uploaderType, Result $result)
     {
@@ -43,7 +43,7 @@ class Result extends \Sta\Util\StdClass
             'name'         => $basename,
             'type'         => $result->getReceivedFile()->getExtension(),
             'originalFile' => $result->getReceivedFile()->getName(),
-            'error'        => $result->getError(),
+            'errors'       => $result->getErrors(),
         );
 
         if (!$result['error']) {
@@ -74,22 +74,22 @@ class Result extends \Sta\Util\StdClass
     }
     
     /**
-     * @param string $error
+     * @param string[]|string $errors
      * @return $this
      */
-    public function setError($error)
+    public function setErrors($errors)
     {
-        $this->error = (string)$error;
+        $this->errors = (array)$errors;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getError()
+    public function getErrors()
     {
-        return $this->error;
+        return $this->errors;
     }
 
     /**

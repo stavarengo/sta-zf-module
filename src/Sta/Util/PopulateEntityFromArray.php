@@ -86,7 +86,10 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 * @param \Sta\Entity\AbstractEntity $entity
 	 *        A instância da entidade que será populada.
 	 * @param array $options
-	 *        Ainda não aceita nenhuma opção. Foi adicionado este parâmetro para uso futuro.
+     *      Aceita as seguintes entradas
+	 *        - autoPersist: Boolean (default true)
+     *              Auto persist as entidades relacionadas no EntityManager. Não faz chamdas ao flush().
+     *  
 	 */
 	private function _populate(array $entityData, AbstractEntity $entity, array $options = array())
 	{
@@ -182,6 +185,9 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 			}
             if (!$associationEntity) {
                 $associationEntity = new $targetEntityClassName;
+                if ($this->_getOption($options, 'autoPersist', true)) {
+                    $this->_getEm()->persist($associationEntity);
+                }
             }
             
             $this->_populate($theData, $associationEntity, $options);
@@ -199,5 +205,10 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
         $entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
 
         return $entityManager;
+    }
+
+    private function _getOption(array $options, $optionName, $default)
+    {
+        return (array_key_exists($optionName, $options) ? $options[$optionName] : $default);
     }
 }

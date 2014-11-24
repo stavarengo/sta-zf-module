@@ -1,0 +1,154 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: App Module\n"
+"POT-Creation-Date: 2014-11-24 14:06-0300\n"
+"PO-Revision-Date: 2014-11-24 14:06-0300\n"
+"Last-Translator: Rafael Stavarengo <faelsta@gmail.com>\n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.6\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../src/Sta/Uploader.php:169
+msgid "Failed to receive your file."
+msgstr "Falha ao receber seu arquivo."
+
+#~ msgid "Log in to your developer account, so we can create an access token."
+#~ msgstr ""
+#~ "Faça login com sua conta de desenvolvedor e então nós poderemos criar um "
+#~ "access token."
+
+#~ msgid "Close"
+#~ msgstr "Fechar"
+
+#~ msgid "Get Token"
+#~ msgstr "Pegar Token"
+
+#~ msgid "Log in"
+#~ msgstr "Login"
+
+#~ msgid "Back to Invence"
+#~ msgstr "Voltar para o Invence"
+
+#~ msgid "All rights reserved."
+#~ msgstr "Todos os direitos reservados."
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> dedicated a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">music</a> to you"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> dedicou uma <a href=\"%3$s\" data-app-action="
+#~ "\"see\">música</a> para você"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> accepted your <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> aceitou sua <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a>"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> she sent to you"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que ela enviou para você"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> he sent to you"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que ele enviou para você"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> you received from <a href=\"%4$s\">%5$s</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que você recebeu de <a href=\"%4$s\">%5$s</a>"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> you sent to she"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que você enviou para ela"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> you sent to he"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que você enviou para ele"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> commented the <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedication</a> you sent to <a href=\"%4$s\">%5$s</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> comentou a <a href=\"%3$s\" data-app-action="
+#~ "\"see\">dedicação</a> que você enviou para <a href=\"%4$s\">%5$s</a>"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> also commented her <a href=\"%5$s\" data-app-"
+#~ "action=\"see\">dedication</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> também comentou a <a href=\"%5$s\" data-app-"
+#~ "action=\"see\">dedicação</a> dela"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> also commented his <a href=\"%5$s\" data-app-"
+#~ "action=\"see\">dedication</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> também comentou a <a href=\"%5$s\" data-app-"
+#~ "action=\"see\">dedicação</a> dele"
+
+#~ msgid ""
+#~ "<a href=\"%1$s\">%2$s</a> also commented <a href=\"%3$s\">%4$s</a>'s <a "
+#~ "href=\"%5$s\" data-app-action=\"see\">dedication</a>"
+#~ msgstr ""
+#~ "<a href=\"%1$s\">%2$s</a> também comentou a <a href=\"%5$s\" data-app-"
+#~ "action=\"see\">dedication</a> de <a href=\"%3$s\">%4$s</a>"
+
+#~ msgid "%1$s dedicated a song to you"
+#~ msgstr "%1$s dedicou uma música para você"
+
+#~ msgid "Somebody requested a new password for your account"
+#~ msgstr "Alguém solicitou uma nova senha para a sua conta"
+
+#~ msgid "Hi %1$s"
+#~ msgstr "Oi %1$s"
+
+#~ msgid ""
+#~ "The song <a href=\"%1$s\" title=\"View this dedication\">%2$s</a> reminds "
+#~ "me %3$s."
+#~ msgstr ""
+#~ "A música <a href=\"%1$s\" title=\"Veja esta dedicação\">%2$s</a> me "
+#~ "lembra de %3$s."
+
+#~ msgid "you"
+#~ msgstr "você"
+
+#~ msgid "Dedicated by %1$s"
+#~ msgstr "Dedicated por %1$s"
+
+#~ msgid "Somebody recently asked to reset your Invence password."
+#~ msgstr "Alguém pediu recentemente  para redefinir sua senha do Invence."
+
+#~ msgid "Click here to change your password."
+#~ msgstr "Clique aqui para alterar sua senha."
+
+#~ msgid "Didn't request this change?"
+#~ msgstr "Não solicitou essa alteração?"
+
+#~ msgid "If you didn't request a new password, just ignore this email."
+#~ msgstr "Se você não solicitou uma nova senha, apenas ignore este e-mail."
+
+#~ msgid "Change Password"
+#~ msgstr "Mudar senha"

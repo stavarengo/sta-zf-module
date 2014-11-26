@@ -17,6 +17,8 @@ return array(
 			'isMobile' => __NAMESPACE__ . '\View\Helper\IsMobile',
 			'getEntityManager' => __NAMESPACE__ . '\View\Helper\GetEntityManager',
 			'getServiceManager' => __NAMESPACE__ . '\View\Helper\GetServiceManager',
+            'entityToArray' => 'Sta\View\Helper\EntityToArray',
+            'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
 		),
 	),
 	'service_manager' => array(

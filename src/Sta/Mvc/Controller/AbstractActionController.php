@@ -11,19 +11,18 @@ use Sta\Entity\AbstractEntity;
  * Herança criada apenas para criar um type hint mais eficaz para o code completition.
  *
  *
- * Convenience methods Sta plugins (@see \Zend\Mvc\Controller\AbstractController::__call):
- *
- * @method \Sta\Util\RangeUnit rangeUnit($maxLength, $unit = 'items', \Zend\Http\Header\HeaderInterface $rawHeader = null, $acceptQueryParams = true)
- * @method \Sta\Mvc\Controller\Plugin\EntityToArray entityToArray($entity = null, array $options = array())
- *
- *
  * Sobrescreve o retorno de alguns métodos que retornam tipos genérios, mas nós sabemos que tipos serão retornados.
  *
  * @method \Zend\Http\PhpEnvironment\Request getRequest()
  * @method \Zend\Http\PhpEnvironment\Response getResponse()
  * @method \Zend\Http\PhpEnvironment\Response getConfiguredResponse($statusCode, $body = null, array $responseHeaders = array())
- * @method array getRequestContent($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY)
+ * 
+ * Convenience methods Sta plugins (@see \Zend\Mvc\Controller\AbstractController::__call):
+ *
+ * @method \Sta\Util\RangeUnit rangeUnit($maxLength, $unit = 'items', \Zend\Http\Header\HeaderInterface $rawHeader = null, $acceptQueryParams = true)
+ * @method \Sta\Mvc\Controller\Plugin\EntityToArray entityToArray($entity = null, array $options = array())
  * @method populateEntityFromArray(array $data, AbstractEntity $entity, array $options = array())
+ * @method array getRequestContent($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY)
  * @method \Sta\Mvc\Controller\Plugin\Cache cache()
  *
  * @author: Stavarengo

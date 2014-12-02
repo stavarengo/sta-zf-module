@@ -23,6 +23,13 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
         $this->validationMessages = $validationMessages;
     }
 
+    public function __toString()
+    {
+        $s = parent::__toString();
+        $s .= "\n" . print_r($this->getAdditionalDetails(), true);
+        return $s;
+    }
+
     /**
      * @return null|array|\Traversable
      */

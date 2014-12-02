@@ -22,11 +22,28 @@ class GetRequestContent extends AbstractPlugin
 	 * @throws GetRequestContentException
 	 * @return array
 	 */
-	public function getRequestContent($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY)
+	public function getRequestContent($objectDecodeType = \Zend\Json\Json::TYPE_ARRAY, $autoDetectSource = true)
 	{
 		/** @var $request Request */
 		$request = $this->getController()->getRequest();
-		$data    = trim($request->getContent());
+        
+        if ($autoDetectSource) {
+            /** @var $contentType \Zend\Http\Header\ContentType */
+            $contentType = $request->getHeader('ContentType');
+            if ($contentType->getMediaType() == 'multipart/form-data') {
+                $data = $_POST;
+                if ($objectDecodeType == \Zend\Json\Json::TYPE_OBJECT) {
+                    $data = (object)$data;
+                }
+                
+                return $data;
+            } else {
+                $data    = trim($request->getContent());
+            }
+        } else {
+            $data    = trim($request->getContent());
+        }
+        
 
 		try {
 			$format      = $this->getController()->getParam('format', 'json');

@@ -16,7 +16,7 @@ class NotNull extends AbstractValidator
 	 * @var array
 	 */
 	protected $messageTemplates = array(
-		self::NOT_NULL_FIELD => 'O atributo "%entityName%::%field%" é necessário e não pode ser vazio.',
+		self::NOT_NULL_FIELD => 'The field "%entityName%::%field%" is required and can\'t be empty.',
 	);
 	/**
 	 * @var array

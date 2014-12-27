@@ -9,6 +9,11 @@ abstract class Action
 	 */
 	public $controller;
 
+	public static function className()
+	{
+		return get_called_class();
+	}
+	
 	public static function invoke(AbstractActionController $controller, $actionName = null)
 	{
 		if (!$actionName) {

@@ -18,9 +18,9 @@ class ShellExec implements Command
 	{
 		if (substr(php_uname(), 0, 7) == "Windows") {
 			$cmd = str_replace('>', '^>', $this->cmd);
-			pclose(popen($cmd, "r"));
+			return pclose(popen($cmd, "r"));
 		} else {
-			exec($this->cmd);
+			return exec($this->cmd);
 		}
 	}
 }

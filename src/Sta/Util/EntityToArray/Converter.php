@@ -60,7 +60,11 @@ class Converter
             throw new Exception\InvalidArgumentException('The parameter "$selector" should be one of "date", "time" or "datetime" values.');
         }
 
-        return $dateTime->format($format);
+		$timeZone = \Web\Module::getCurrTimeZone() + ($dateTime->getOffset() / 3600);
+		$dateTime->setTimestamp($dateTime->getTimestamp() - ($timeZone * 3600)); 
+		$str = $dateTime->format($format);
+
+		return $str;
     }
 
     /**

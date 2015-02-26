@@ -40,7 +40,7 @@ class BackgroundExec implements Command
 		} else {
 			$cmd = $this->cmd . " > /dev/null &";
 		}
-        Invoker::invoke(new ShellExec($cmd));
+        return Invoker::invoke(new ShellExec($cmd));
 	}
 
 	private function getIntPrioToWinPrio($prio)

@@ -82,7 +82,9 @@ class Uploader
                 )
             );
         } catch (\Exception $e) {
-            $this->logger->err(self::TAG . "Exceção: \n$e");
+            if (!($e instanceof Exception\NoFilesFoundException)) {
+                $this->logger->err(self::TAG . "Exceção: \n$e");
+            }
             throw $e;
         }
 

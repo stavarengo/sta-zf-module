@@ -96,9 +96,11 @@ abstract class Query extends Action
 			return $this->getController()->getConfiguredResponse(400, $e->getMessage());
 		}
 
-		$responseHeaders = array('Content-Range' => "items {$range->getStart()}-{$range->getEnd()}/$rowCount");
+		$responseHeaders = array(
+            'X-Content-Range' => "items {$range->getStart()}-{$range->getEnd()}/$rowCount",
+        );
 		if ($rowCount > count($retorno)) {
-			$codigo = 206; //Estou paginando o resultado da consulta
+			$codigo = 200; //Estou paginando o resultado da consulta
 		} else {
 			$codigo = 200; //Estou retornando todos os registros possíveis para esta consulta
 		}

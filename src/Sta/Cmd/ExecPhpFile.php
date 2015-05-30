@@ -12,14 +12,21 @@ class ExecPhpFile implements Command
 	 * @var string
 	 */
 	private $phpFile = null;
+	private $args = '';
 
-	public function __construct($phpFile)
+	public function __construct($phpFile, $args = '')
 	{
 		$this->phpFile = (string)$phpFile;
+		$this->args = (string)$args;
 	}
 
 	public function execute()
 	{
-        return Invoker::invoke(new ShellExec('php -f "' . $this->phpFile . '"'));
+        $cmd = 'php -f "' . $this->phpFile . '"';
+        if ($this->args) {
+            $cmd .= ' -- ' . $this->args;
+        }
+
+        return Invoker::invoke(new ShellExec($cmd));
 	}
 }

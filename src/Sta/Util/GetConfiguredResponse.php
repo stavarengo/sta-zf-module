@@ -62,10 +62,12 @@ class GetConfiguredResponse implements ServiceLocatorAwareInterface
 				$body        = $this->arrayToXml($body, $isDebug)->flush();
 			} else {
 				$contentType = 'application/json; charset=utf-8';
-				$body        = \Zend\Json\Json::encode($body);
-				if ($isDebug) {
-					$body = \Zend\Json\Json::prettyPrint($body, array("indent" => "    "));
-				}
+				if ($body !== null) {
+				    $body = \Zend\Json\Json::encode($body);
+                    if ($isDebug) {
+                        $body = \Zend\Json\Json::prettyPrint($body, array("indent" => "    "));
+                    }
+                }
 			}
 		} else {
 			$contentType = 'text/html; charset=utf-8';

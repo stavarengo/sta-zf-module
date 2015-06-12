@@ -231,7 +231,7 @@ class StringFormats
      * @throws \Sta\Exception
      * @return string
      */
-    public static function normalizeUrl($url, $wordSeparator = '', $maxLength = null)
+    public static function normalizeUrl($url, $wordSeparator = '-', $maxLength = null)
     {
         $wordSeparatorAllowed = array(
             '.', '-', '_'
@@ -255,6 +255,7 @@ class StringFormats
             '-_-'                           => '-',
             '_-'                            => '-',
             '-_'                            => '-',
+            '&'                            => 'and',
         );
 
         foreach ($charsToReplace as $search => $replace) {
@@ -267,8 +268,8 @@ class StringFormats
 
         $allWordsSeparatorsTogether = implode('', $wordSeparatorAllowed);
         
-        $regex = '[^a-z0-9' . $allWordsSeparatorsTogether . ']'; //remove os caractres não alfa numericos e não permitidos na url
-        $regex = preg_quote($regex, '/');
+        $regex = 'a-z0-9' . preg_quote($allWordsSeparatorsTogether); //remove os caractres não alfa numericos e não permitidos na url
+        $regex = '[^' . $regex . ']';
         $url   = preg_replace('/' . $regex . '/i', '', $url);
 
         $url = trim($url, ' ' . $allWordsSeparatorsTogether);

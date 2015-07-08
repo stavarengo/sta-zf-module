@@ -135,34 +135,22 @@ class StringFormats
     public static function printSQL($sql, $return = false, $html = false, $depth = 0)
     {
         if ($sql instanceof \Doctrine\ORM\QueryBuilder) {
-            $params = $sql->getParameters();
-            $sql    = $sql->getQuery()->getSQL();
-            /** @var $param \Doctrine\ORM\Query\Parameter */
-            foreach ($params as $param) {
-                $paramValue    = $param->getValue();
-                $sqlParamValue = $paramValue;
-//                $paramName     = $param->getName();
-
-                if ($paramValue instanceof \DateTime) {
-                    $sqlParamValue = "'" . $paramValue->format('Y-m-d H:m:s') . "'";
-                } else if ($paramValue instanceof \Doctrine\ORM\QueryBuilder) {
-                    $sqlParamValue = "\n" . self::printSQL($paramValue, true, $html, $depth + 1);
-                } else if ($paramValue instanceof \Sta\Entity\AbstractEntity) {
-                    $sqlParamValue = $paramValue->getId();
-                } else if (is_array($paramValue)) {
-                    $valueAux = array();
-                    foreach ($paramValue as $value) {
-                        if ($value instanceof \Sta\Entity\AbstractEntity) {
-                            $valueAux[] = $value->getId();
-                        }
-                    }
-                    $sqlParamValue = implode(',', $valueAux);
+            $query  = $sql->getQuery();
+            list($sqlParams, $types) = self::_printSql_ProcessParameterMappings($query);
+            list($sql, $params, $types) = \Doctrine\DBAL\SQLParserUtils::expandListParameters($query->getSQL(), $sqlParams, $types);
+            foreach ($params as $name => $value) {
+                if (is_int($name)) {
+                    $name = '?';
                 }
-
-                $sql = preg_replace('/\?/', $sqlParamValue, $sql, 1);
+                if ($value === null) {
+                    $value = 'null';
+                } else if (is_array($value)) {
+                    $value = implode(', ', $value);
+                }
+                $sql = preg_replace('/' . preg_quote($name, '/') . '/', $value, $sql, 1);
             }
         }
-
+        
         $depth = str_repeat("\t", $depth);
 
         $sql = str_replace('SELECT ', "{$depth}\bSELECT\b\n{$depth}\t", $sql);
@@ -219,6 +207,69 @@ class StringFormats
         } else {
             echo $sql;
         }
+    }
+
+    private static function _printSql_ProcessParameterMappings(\Doctrine\ORM\Query $query)
+    {
+        $parser = new \Doctrine\ORM\Query\Parser($query);
+        $parserResult = $parser->parse();
+        $paramMappings = $parserResult->getParameterMappings();
+        $resultSetMapping = $parserResult->getResultSetMapping();
+
+        $parameters = $query->getParameters();
+        if (count($paramMappings) != count($parameters)) {
+            throw \Doctrine\ORM\Query\QueryException::invalidParameterNumber();
+        }
+        
+        $sqlParams = array();
+        $types     = array();
+
+        foreach ($parameters as $parameter) {
+            $key    = $parameter->getName();
+            $value  = $parameter->getValue();
+
+            if ( ! isset($paramMappings[$key])) {
+                throw \Doctrine\ORM\Query\QueryException::unknownParameter($key);
+            }
+
+            if (isset($resultSetMapping->metadataParameterMapping[$key]) && $value instanceof \Doctrine\ORM\Mapping\ClassMetadata) {
+                $value = $value->getMetadataValue($resultSetMapping->metadataParameterMapping[$key]);
+            }
+
+            $value = $query->processParameterValue($value);
+            $type  = ($parameter->getValue() === $value)
+                ? $parameter->getType()
+                : \Doctrine\ORM\Query\ParameterTypeInferer::inferType($value);
+
+            foreach ($paramMappings[$key] as $position) {
+                $types[$position] = $type;
+            }
+
+            $sqlPositions = $paramMappings[$key];
+
+            // optimized multi value sql positions away for now,
+            // they are not allowed in DQL anyways.
+            $value = array($value);
+            $countValue = count($value);
+
+            for ($i = 0, $l = count($sqlPositions); $i < $l; $i++) {
+                $sqlParams[$sqlPositions[$i]] = $value[($i % $countValue)];
+            }
+        }
+
+        if (count($sqlParams) != count($types)) {
+            throw \Doctrine\ORM\Query\QueryException::parameterTypeMismatch();
+        }
+
+        if ($sqlParams) {
+            ksort($sqlParams);
+            $sqlParams = array_values($sqlParams);
+
+            ksort($types);
+            $types = array_values($types);
+        }
+
+        return array($sqlParams, $types);
     }
 
     /**

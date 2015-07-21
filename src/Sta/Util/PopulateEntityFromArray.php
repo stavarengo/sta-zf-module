@@ -132,36 +132,19 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 			$fieldType     = $fieldDefinition['type'];
 			$datetimeTypes = array('datetime', 'date', 'time');
 			if (in_array($fieldType, $datetimeTypes)) {
-				$config      = $this->serviceManager->get('config');
-				$defTz       = new \DateTimeZone($config['webapp']['datetime']['deftault-timezone']);
-				$fieldFormat = $config['webapp']['datetime'][$fieldType];
-
-				$originalValue = $value;
-				if (!($value = \DateTime::createFromFormat($fieldFormat, $value))) {
-					// Se falhou ao converter a data, talvez seja pq enviou um formato completo de data para quando o 
-					// campo aceita apenas parte da data.
-					// Ex: enviou data e hroa quando o campo aceita apenas data ou hora.
-					// Neste caso abaixo damos mais uma chance tentando descobrir se foi isso que aconteceu e usando
-					// a formatação mais adequada para o valor recebido.
-					$agora                = new \DateTime('now', $defTz);
-					$dateTimeStrLength    = strlen($agora->format($config['webapp']['datetime']['datetime']));
-					$lengthDaDataRecebida = strlen($originalValue);
-					if ($lengthDaDataRecebida == $dateTimeStrLength) {
-						if ($fieldType == 'time' || $fieldType == 'date') {
-							// o campo aceita apenas data ou hora, mas recebemos um valor com a mesma qtd de chars
-							// usado para campos que aceitam data e hora. Talvez, o valor recebido soh esteja no fomato
-							// completo quando deveria estar no formato menor, como descrito no comentario acima.
-							// Vamos dar mais uma chance!
-							$value = \DateTime::createFromFormat($config['webapp']['datetime']['datetime'], $originalValue);
-						}
-					}
-					if (!$value) {
-						throw new PopulateEntityFromArrayException('Formato de data/hora inválido para o atributo "'
-							. $fieldName . '". Valo recebido: "' . $originalValue . '". Formato esperado: "' . $fieldFormat
-							. '" - Ex: ' . $agora->format($fieldFormat) . '.', 400);
-					}
-				}
-				$value->setTimezone($defTz);
+                $originalValue = $value;
+                $value = self::strToDateTime($this->getServiceLocator(), $value, $fieldType);
+                if (!$value) {
+                    $config      = $this->getServiceLocator()->get('config');
+                    $fieldFormat = $config['webapp']['datetime'][$fieldType];
+                    $agora       = new \DateTime('now');
+                    
+                    throw new PopulateEntityFromArrayException(
+                        'Formato de data/hora inválido para o atributo "'
+                        . $fieldName . '". Valo recebido: "' . $originalValue . '". Formato esperado: "' . $fieldFormat
+                        . '" - Ex: ' . $agora->format($fieldFormat) . '.', 400
+                    );
+                }
 			}
 		}
 
@@ -210,5 +193,47 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
     private function _getOption(array $options, $optionName, $default)
     {
         return (array_key_exists($optionName, $options) ? $options[$optionName] : $default);
+    }
+
+    /**
+     * @param $fieldName
+     * @param $value
+     * @param $fieldType
+     *
+     * @return \DateTime
+     * @throws \Sta\Util\PopulateEntityFromArrayException
+     */
+    public static function strToDateTime(ServiceLocatorInterface $sl, $value, $fieldType)
+    {
+        $config      = $sl->get('config');
+        $defTz       = new \DateTimeZone($config['webapp']['datetime']['deftault-timezone']);
+        $fieldFormat = $config['webapp']['datetime'][$fieldType];
+
+        $originalValue = $value;
+        if (!($value = \DateTime::createFromFormat($fieldFormat, $value))) {
+            // Se falhou ao converter a data, talvez seja pq enviou um formato completo de data para quando o 
+            // campo aceita apenas parte da data.
+            // Ex: enviou data e hroa quando o campo aceita apenas data ou hora.
+            // Neste caso abaixo damos mais uma chance tentando descobrir se foi isso que aconteceu e usando
+            // a formatação mais adequada para o valor recebido.
+            $agora                = new \DateTime('now', $defTz);
+            $dateTimeStrLength    = strlen($agora->format($config['webapp']['datetime']['datetime']));
+            $lengthDaDataRecebida = strlen($originalValue);
+            if ($lengthDaDataRecebida == $dateTimeStrLength) {
+                if ($fieldType == 'time' || $fieldType == 'date') {
+                    // o campo aceita apenas data ou hora, mas recebemos um valor com a mesma qtd de chars
+                    // usado para campos que aceitam data e hora. Talvez, o valor recebido soh esteja no fomato
+                    // completo quando deveria estar no formato menor, como descrito no comentario acima.
+                    // Vamos dar mais uma chance!
+                    $value = \DateTime::createFromFormat($config['webapp']['datetime']['datetime'], $originalValue);
+                }
+            }
+            if (!$value) {
+                return null;
+            }
+        }
+        $value->setTimezone($defTz);
+
+        return $value;
     }
 }

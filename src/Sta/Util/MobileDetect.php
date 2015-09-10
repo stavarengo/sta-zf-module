@@ -17,26 +17,4 @@ class MobileDetect extends \Mobile_Detect
         return self::$instance;
     }
 
-    public function __construct(array $headers = null, $userAgent = null)
-    {
-        // Veja http://stackoverflow.com/a/32147456/2397394
-        if (preg_match('/\bUnsetSessionUA\b/', $_SERVER['HTTP_USER_AGENT'])) {
-            unset($_SESSION['\Sta\Util\MobileDetect::userAgent']);
-        }
-        $updateSession = false;
-        if ($userAgent === null) {
-            if (isset($_SESSION['\Sta\Util\MobileDetect::userAgent'])) {
-                $userAgent = $_SESSION['\Sta\Util\MobileDetect::userAgent'];
-            } else {
-                $updateSession = true;
-            }
-        }
-        
-        parent::__construct($headers, $userAgent);
-        
-        if ($updateSession) {
-            $_SESSION['\Sta\Util\MobileDetect::userAgent'] = $this->getUserAgent();
-        }
-    }
-
 } 

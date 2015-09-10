@@ -21,7 +21,7 @@ class IsMobile extends AbstractHelper implements ServiceLocatorAwareInterface
 	public function __invoke()
 	{
 		if ($this->isMobile === null && !($this->isMobile = $this->getServiceLocator()->getServiceLocator()->get('isDebug')->is())) {
-			$this->isMobile = \App\MobileDetect::getInstance()->isMobile();
+			$this->isMobile = \App\MobileDetect\MobileDetect::getInstance()->isMobile();
 		}
 		return $this->isMobile;
 	}

@@ -37,7 +37,7 @@ abstract class Action
 
 	/**
 	 * Executa a ação.
-	 * @return mixin
+	 * @return mixin|\Zend\Http\PhpEnvironment\Response
 	 */
 	public abstract function execute();
 

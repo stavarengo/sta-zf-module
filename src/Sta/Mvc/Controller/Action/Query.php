@@ -61,7 +61,7 @@ abstract class Query extends Action
 	protected abstract function fetchAll(array $sortDef, $count = null, $offset = null);
 
 	/**
-	 * @return mixin|\Sta\Mvc\Controller\Plugin\GetConfiguredResponse
+	 * @return mixin|\Zend\Http\PhpEnvironment\Response
 	 */
 	public function execute()
 	{

@@ -12,9 +12,7 @@ class StdClass
 
     public function __construct(array $initialData = array())
     {
-        foreach ($initialData as $attr => $value) {
-            $this->set($attr, $value);
-        }
+        $this->fromArray($initialData);
     }
 
     /**
@@ -55,6 +53,15 @@ class StdClass
             . $attributeName . '"');
     }
 
+    public function fromArray(array $data)
+    {
+        foreach ($data as $attr => $value) {
+            $this->set($attr, $value);
+        }
+        
+        return $this;
+    }
+    
     /**
      * @return array
      */

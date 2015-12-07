@@ -34,6 +34,11 @@ class Bean
 		$this->unit  = (string)$unit;
 	}
 
+	public function __toString()
+	{
+		return "$this->unit=$this->start-$this->end";
+	}
+
 	/**
 	 * @param int $end
 	 */

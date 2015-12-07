@@ -1,11 +1,10 @@
 <?php
 namespace Sta\Util;
 
-use Sta\Mvc\Controller\AbstractActionController;
 use Sta\Util\RangeUnit\Bean;
 use Sta\Util\RangeUnit\Exception;
 use Zend\Http\Header\Range;
-use Zend\Http\PhpEnvironment\Request;
+use Zend\Mvc\Controller\AbstractController;
 
 /**
  * @author Stavarengo
@@ -14,9 +13,9 @@ class RangeUnit
 {
 
 	/**
-	 * @var \Sta\Mvc\Controller\AbstractActionController
+	 * @var \Zend\Http\Request
 	 */
-	private $controller;
+	private $request;
 	/**
 	 * @var int
 	 */
@@ -41,7 +40,7 @@ class RangeUnit
 
     /**
 	 *
-	 * @param \Sta\Mvc\Controller\AbstractActionController $controller
+	 * @param \Sta\Mvc\Controller\AbstractActionController|\Zend\Http\Request $controllerOrRequest
 	 *
 	 * @param int $maxLength
 	 *        Quantidade máxima permitida para o range. Tamanho total da entidade.
@@ -58,10 +57,14 @@ class RangeUnit
 	 *        Default true. Quando true, se o cabeçalho Range não existir, nós tentaremos montar um range usando os
 	 *        parâmetros GET 'start' e 'count'.
 	 */
-	public function __construct(AbstractActionController $controller, $maxLength, $unit = 'items',
+	public function __construct($controllerOrRequest, $maxLength, $unit = 'items',
 		\Zend\Http\Header\HeaderInterface $rawHeader = null, $acceptQueryParams = true
 	) {
-		$this->controller        = $controller;
+		if ($controllerOrRequest instanceof AbstractController) {
+			$controllerOrRequest = $controllerOrRequest->getRequest();
+		}
+		
+		$this->request           = $controllerOrRequest;
 		$this->maxLength         = $maxLength;
 		$this->unit              = $unit;
 		$this->rawHeader         = ($rawHeader === null ? false : $rawHeader);
@@ -71,17 +74,20 @@ class RangeUnit
 	/**
 	 * Valida o conteúdo da entidade Range e se ela estiver correta retorna suas informações.
 	 *
+	 * @param bool $throwException
+	 * 		Gera exceção se o Range não for satisfatório.
+	 * 
 	 * @throws RangeUnit\Exception
 	 * @return Bean
 	 *        Retorna null se o {@link getRawHeader() Range header} não for satisfatório.
 	 *        Ex. para Range:"items=0-25" ou Range:"items="-25", o retorno será um objeto {@link Bean}
 	 *        com os seguintes valores: start = 0, end = 25, length = 26 e unit = 'items'.
 	 */
-	public function get()
+	public function get($throwException = true)
 	{
 		$rangeHeader = $this->getRawHeader();
 
-		if (!$this->isSatisfactory()) {
+		if ($throwException && !$this->isSatisfactory()) {
 			throw new Exception('Range "' . $rangeHeader->getFieldValue() . '" não é satisfatório.');
 		}
 
@@ -169,8 +175,7 @@ class RangeUnit
 
     private function _getRaw($allowDefault)
     {
-        /** @var $request Request */
-        $request = $this->controller->getRequest();
+        $request = $this->request;
         if (!($rangeHeader = $request->getHeader('Range'))) {
             // Se não encontrou a entidade Range, procura por X-Range
             $rangeHeader = $request->getHeader('X-Range');
@@ -180,8 +185,8 @@ class RangeUnit
             if ($this->acceptQueryParams) {
                 $rangeUnit = $this->unit;
                 
-                $start = $this->controller->params()->fromQuery('start', null);
-                $count = $this->controller->params()->fromQuery('count', null);
+                $start = $this->request->params()->fromQuery('start', null);
+                $count = $this->request->params()->fromQuery('count', null);
                 
                 if ($start !== null || $count !== null) {
                     // Pelo menos uma informação foi definida.

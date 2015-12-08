@@ -185,8 +185,8 @@ class RangeUnit
             if ($this->acceptQueryParams) {
                 $rangeUnit = $this->unit;
                 
-                $start = $this->request->params()->fromQuery('start', null);
-                $count = $this->request->params()->fromQuery('count', null);
+				$start = $this->request->getQuery('start', null);
+				$count = $this->request->getQuery('count', null);
                 
                 if ($start !== null || $count !== null) {
                     // Pelo menos uma informação foi definida.

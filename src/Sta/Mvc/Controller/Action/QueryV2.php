@@ -32,7 +32,7 @@ abstract class QueryV2 extends Query
 	{
 		$qb          = $this->_getQueryBuildClone();
 		$rootAliases = $qb->getRootAliases();
-		$qb->select($qb->expr()->count($rootAliases[0]));
+		$qb->select($qb->expr()->countDistinct($rootAliases[0]));
 		return (int)$qb->getQuery()->getSingleScalarResult();
 	}
 

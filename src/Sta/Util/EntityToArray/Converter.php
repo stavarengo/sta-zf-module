@@ -60,8 +60,16 @@ class Converter
             throw new Exception\InvalidArgumentException('The parameter "$selector" should be one of "date", "time" or "datetime" values.');
         }
 
-		$timeZone = \Web\Module::getCurrTimeZone() + ($dateTime->getOffset() / 3600);
-		$dateTime->setTimestamp($dateTime->getTimestamp() - ($timeZone * 3600)); 
+		$tzStr = str_replace('.',':', sprintf('%+06.2f', \Web\Module::getCurrTimeZone()));
+		$timezoneFromCookie = \DateTime::createFromFormat('O', $tzStr)->getTimezone();
+		$d1 = new \DateTime('now', $timezoneFromCookie);
+		$offsetFromCookie = $d1->getOffset();
+		$offsetFromDateTime = $dateTime->getOffset();
+
+		if ($offsetFromCookie != $offsetFromDateTime) {
+			$dateTime->setTimezone($timezoneFromCookie);
+		}
+
 		$str = $dateTime->format($format);
 
 		return $str;

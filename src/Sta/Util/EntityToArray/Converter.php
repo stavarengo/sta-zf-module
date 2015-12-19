@@ -47,6 +47,7 @@ class Converter
      */
     public static function convertDateTimeToStr(ServiceManager $serviceLocator, \DateTime $dateTime, $selector = 'datetime')
     {
+		$dateTime		 = clone $dateTime;
         $config          = $serviceLocator->get('config');
         $dateTimeFormats = $config['webapp']['datetime'];
         $format = null;

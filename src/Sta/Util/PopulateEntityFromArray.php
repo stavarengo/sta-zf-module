@@ -206,7 +206,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
     public static function strToDateTime(ServiceLocatorInterface $sl, $value, $fieldType)
     {
         $config      = $sl->get('config');
-        $defTz       = new \DateTimeZone($config['webapp']['datetime']['deftault-timezone']);
+        $defTz       = new \DateTimeZone(date_default_timezone_get());
         $fieldFormat = $config['webapp']['datetime'][$fieldType];
 
         $originalValue = $value;

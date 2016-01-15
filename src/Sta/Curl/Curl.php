@@ -14,7 +14,7 @@ class Curl
         return $this->_getContent($url, $params);
     }
 
-    public function getContentByPost($url, array $postBody, array $params = array())
+    public function getContentByPost($url, $postBody, array $params = array())
     {
         $params[CURLOPT_POST ] = true;
         $params[CURLOPT_POSTFIELDS] = $postBody;

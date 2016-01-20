@@ -2,7 +2,6 @@
 namespace Sta;
 
 use Sta\Semaphore\Emulator;
-use Sta\Semaphore\Exception;
 use Sta\Semaphore\Native;
 
 /**
@@ -59,7 +58,7 @@ class Semaphore
 	 *
 	 * @return array
 	 *        O semáforo criado. Este retorno deve ser usado liberar o semáforo com a função {@link Semaphore::release() }
-	 * @throws Exception
+	 * @throws \Sta\Semaphore\Exception
 	 *        Se não conseguiu obter acesso exclusivo.
 	 */
 	public static function acquire($key)
@@ -77,7 +76,7 @@ class Semaphore
 	 *        O retorno da função {@link Semaphore::acquire() }
 	 *
 	 * @return void
-	 * @throws Exception
+	 * @throws \Sta\Semaphore\Exception
 	 *        Se não conseguiur liberar o semáforo.
 	 */
 	public static function release(array $semaphore)

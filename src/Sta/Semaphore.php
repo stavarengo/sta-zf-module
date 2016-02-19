@@ -65,8 +65,6 @@ class Semaphore
 	{
 		$semaphore              = self::getInstance()->_acquire($key);
 		
-		file_put_contents(\App\Dirs::root(false) . '/../data/log/sem.log', date('Y-m-d H:i:s') . ' - ' . session_id() . ' - ' . php_sapi_name() . " - Acquire: $key - " . print_r($semaphore, true) . "\n", FILE_APPEND);
-
 		self::$semaphores[$key] = self::getInstance()->_createSemaphore($key, $semaphore);
 		return self::$semaphores[$key];
 	}
@@ -91,8 +89,6 @@ class Semaphore
 
 		self::getInstance()->_release($semaphore['semaphore']);
 		
-		file_put_contents(\App\Dirs::root(false) . '/../data/log/sem.log', date('Y-m-d H:i:s') . ' - ' . session_id() . ' - ' . php_sapi_name() . ' - Release: ' . $semaphore['key'] . ' - ' . print_r($semaphore['semaphore'], true) . "\n", FILE_APPEND);
-
 		$key = $semaphore['key'];
 		if (isset(self::$semaphores[$key])) {
 			unset(self::$semaphores[$key]);

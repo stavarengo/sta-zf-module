@@ -19,6 +19,7 @@ return array(
 			'getServiceManager' => __NAMESPACE__ . '\View\Helper\GetServiceManager',
             'entityToArray' => 'Sta\View\Helper\EntityToArray',
             'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
+            'shortNumber' => 'Sta\View\Helper\ShortNumber',
 		),
 	),
 	'service_manager' => array(

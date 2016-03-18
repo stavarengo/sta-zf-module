@@ -24,11 +24,11 @@ return array(
 	),
 	'service_manager' => array(
 		'invokables' => array(
-			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponse', 
 			'Sta\Util\MobileDetect' => 'Sta\Util\MobileDetect',
             'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
 		),
 		'factories' => array(
+			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponseFactory', 
 			'Sta\Util\EntityToArray' => 'Sta\Util\EntityToArray\Factory', 
 		),
 		'aliases' => array(

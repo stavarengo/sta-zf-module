@@ -2,18 +2,27 @@
 
 namespace Sta\Util;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-
 /**
  * @author: Stavarengo
  */
-class GetConfiguredResponse implements ServiceLocatorAwareInterface
+class GetConfiguredResponse 
 {
 
 	/**
 	 * @var \Zend\ServiceManager\ServiceLocatorInterface
 	 */
 	private $serviceLocator;
+
+	/**
+	 * GetConfiguredResponse constructor.
+	 *
+	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+	 */
+	public function __construct(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
+	{
+		$this->serviceLocator = $serviceLocator;
+	}
+
 
 	/**
 	 * @param \Zend\Http\PhpEnvironment\Response $response

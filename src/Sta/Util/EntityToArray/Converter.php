@@ -49,7 +49,7 @@ class Converter
     {
 		$dateTime		 = clone $dateTime;
         $config          = $serviceLocator->get('config');
-        $dateTimeFormats = $config['webapp']['datetime'];
+        $dateTimeFormats = $config['web']['datetime'];
         $format = null;
         if ($selector == 'date') {
             $format = $dateTimeFormats['date'];

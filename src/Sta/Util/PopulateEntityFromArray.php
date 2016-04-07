@@ -136,7 +136,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
                 $value = self::strToDateTime($this->getServiceLocator(), $value, $fieldType);
                 if (!$value) {
                     $config      = $this->getServiceLocator()->get('config');
-                    $fieldFormat = $config['webapp']['datetime'][$fieldType];
+                    $fieldFormat = $config['web']['datetime'][$fieldType];
                     $agora       = new \DateTime('now');
                     
                     throw new PopulateEntityFromArrayException(
@@ -207,7 +207,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
     {
         $config      = $sl->get('config');
         $defTz       = new \DateTimeZone(date_default_timezone_get());
-        $fieldFormat = $config['webapp']['datetime'][$fieldType];
+        $fieldFormat = $config['web']['datetime'][$fieldType];
 
         $originalValue = $value;
         if (!($value = \DateTime::createFromFormat($fieldFormat, $value))) {
@@ -217,7 +217,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
             // Neste caso abaixo damos mais uma chance tentando descobrir se foi isso que aconteceu e usando
             // a formatação mais adequada para o valor recebido.
             $agora                = new \DateTime('now', $defTz);
-            $dateTimeStrLength    = strlen($agora->format($config['webapp']['datetime']['datetime']));
+            $dateTimeStrLength    = strlen($agora->format($config['web']['datetime']['datetime']));
             $lengthDaDataRecebida = strlen($originalValue);
             if ($lengthDaDataRecebida == $dateTimeStrLength) {
                 if ($fieldType == 'time' || $fieldType == 'date') {
@@ -225,7 +225,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
                     // usado para campos que aceitam data e hora. Talvez, o valor recebido soh esteja no fomato
                     // completo quando deveria estar no formato menor, como descrito no comentario acima.
                     // Vamos dar mais uma chance!
-                    $value = \DateTime::createFromFormat($config['webapp']['datetime']['datetime'], $originalValue);
+                    $value = \DateTime::createFromFormat($config['web']['datetime']['datetime'], $originalValue);
                 }
             }
             if (!$value) {

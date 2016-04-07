@@ -1,6 +1,7 @@
 <?php
 
 namespace Sta\Util;
+use App\Env\Env;
 
 /**
  * @author: Stavarengo
@@ -62,8 +63,9 @@ class GetConfiguredResponse
 	public function getConfiguredResponse(\Zend\Http\PhpEnvironment\Response $response, $statusCode, $body = null,
 		$format = 'json', array $responseHeaders = array()
 	) {
-		$config  = $this->getServiceLocator()->get('config');
-		$isDebug = $config['webapp']['isDebug'];
+		/** @var Env $env */
+		$env     = $this->getServiceLocator()->get('App\Env');
+		$isDebug = $env->isDev();
 		$headers = $response->getHeaders();
 		if ($statusCode >= 200 && $statusCode <= 299) {
 			if ($format == 'xml') {

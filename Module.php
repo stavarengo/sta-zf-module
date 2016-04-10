@@ -97,9 +97,11 @@ class Module implements Feature\AutoloaderProviderInterface,
 		//$em->getConfiguration()->setSQLLogger(new \Sta\Dbal\Logging\EchoSQLLogger());
 
 		if (isset($staConfig['customDoctrineTypes']) && $staConfig['customDoctrineTypes'] == true) {
-			\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\PercentageType::PERCENTAGE, 'Sta\Dbal\Types\PercentageType');
-			\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyType::MONEY, 'Sta\Dbal\Types\MoneyType');
-			\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyPercentageType::MONEY_PERCENTAGE, 'Sta\Dbal\Types\MoneyPercentageType');
+			if (!\Doctrine\DBAL\Types\Type::hasType(\Sta\Dbal\Types\PercentageType::PERCENTAGE)) {
+				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\PercentageType::PERCENTAGE, 'Sta\Dbal\Types\PercentageType');
+				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyType::MONEY, 'Sta\Dbal\Types\MoneyType');
+				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyPercentageType::MONEY_PERCENTAGE, 'Sta\Dbal\Types\MoneyPercentageType');
+			}
 		}
 
 //		Type::addType(OffsetTimeZoneType::OFFSET_TIME_ZONE, __NAMESPACE__ . '\Dbal\Types\OffsetTimeZoneType');

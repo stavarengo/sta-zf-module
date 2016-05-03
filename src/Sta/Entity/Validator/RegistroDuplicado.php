@@ -4,6 +4,7 @@ namespace Sta\Entity\Validator;
 use App\Entity\Annotation\SharingForbidden;
 use App\Entity\Annotation\WithCompanyOwner;
 use App\Entity\Company;
+use App\Env\Env;
 use App\Model\CompartilhamentosEmpresas;
 use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
@@ -86,13 +87,15 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 			throw new \Sta\Entity\Validator\InvalidArgument();
 		}
 
+		/** @var Env $env */
+		$env               = \Sta\Module::getServiceLocator()->get('App\Env');
 		$this->em          = \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		$this->value       = $value;
 		$this->entity      = $value->entity;
 		$this->entityClass = \App\Entity\AbstractEntity::getClass($this->entity);
 		$this->entityName  = $this->entityClass;
 
-		$refClass                          = \App\Entity\AbstractEntity::getReflectionClass($value->entity);
+		$refClass                          = \Sta\ReflectionClass::factory($value->entity, $env->isDev());
 		$this->annoWithCompany             = $refClass->getClassAnnotation('App\Entity\Annotation\WithCompanyOwner');
 		$this->sharingForbidden            = $refClass->getClassAnnotation('App\Entity\Annotation\SharingForbidden');
 		$this->idDasEmpresasCompartilhando = array();

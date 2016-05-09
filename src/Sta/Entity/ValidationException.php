@@ -15,9 +15,14 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
 
     protected $validationMessages;
     
-    public function __construct(array $validationMessages)
+    public function __construct(array $validationMessages, $message = null)
     {
-        $message = 'Failed Validation';
+        $message = ($message ? $message : 'Failed Validation');
+
+        if (class_exists('\PHPUnit_Framework_Assert', false)) {
+            $message .= ". Messages:\n" . print_r($validationMessages, true);
+        }
+
         parent::__construct($message, 422);
         
         $this->validationMessages = $validationMessages;

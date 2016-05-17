@@ -103,7 +103,6 @@ class Module implements Feature\AutoloaderProviderInterface,
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\PercentageType::PERCENTAGE, 'Sta\Dbal\Types\PercentageType');
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyType::MONEY, 'Sta\Dbal\Types\MoneyType');
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyPercentageType::MONEY_PERCENTAGE, 'Sta\Dbal\Types\MoneyPercentageType');
-				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\StaDecimalType::STA_DECIMAL, StaDecimalType::class);
 			}
 		}
 

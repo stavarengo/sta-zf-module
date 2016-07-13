@@ -49,4 +49,10 @@ class AbstractActionController extends \Zend\Mvc\Controller\AbstractActionContro
 		}
 		return ($value === $def ? $default : $value);
 	}
+
+	public function getServiceLocator()
+	{
+		return $this->serviceLocator;
+	}
+
 }

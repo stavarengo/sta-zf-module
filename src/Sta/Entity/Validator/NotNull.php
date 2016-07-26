@@ -11,7 +11,7 @@ use Zend\Validator\NotEmpty;
 class NotNull extends AbstractValidator
 {
 
-	const NOT_NULL_FIELD = 'not_null_field';
+	const NOT_NULL_FIELD = 'NOT_NULL_FIELD';
 	/**
 	 * @var array
 	 */

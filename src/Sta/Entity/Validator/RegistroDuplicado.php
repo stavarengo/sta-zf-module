@@ -217,7 +217,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 
             if ($attributeValue instanceof AbstractEntity) {
                 if (!$this->em->getRepository(\App\Entity\AbstractEntity::getClass($attributeValue))->find(
-                    (int)$attributeValue->getId()
+                    $attributeValue->getId()
                 )
                 ) {
                     // Está verificando a duplicidade de valores em uma coluna FK (que aponta para outra tabela),

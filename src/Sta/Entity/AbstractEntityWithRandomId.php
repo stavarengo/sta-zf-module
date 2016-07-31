@@ -13,7 +13,7 @@ use Sta\Entity\Exception\InvalidArgument;
  * @author: Stavarengo
  * @ORM\MappedSuperclass
  */
-abstract class AbstractEntityWithRandomId extends AbstractEntityWithoutId
+abstract class AbstractEntityWithRandomId extends AbstractEntityWithId
 {
 
     /**

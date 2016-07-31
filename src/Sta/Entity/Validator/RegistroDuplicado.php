@@ -8,6 +8,7 @@ use App\Env\Env;
 use App\Model\CompartilhamentosEmpresas;
 use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
+use Sta\Entity\AbstractEntityWithId;
 
 class RegistroDuplicado extends \Zend\Validator\AbstractValidator
 {
@@ -64,7 +65,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
      */
     private $em;
     /**
-     * @var AbstractEntity
+     * @var AbstractEntityWithId
      */
     private $entity;
     /**
@@ -128,7 +129,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
         $valores = [];
         foreach ($this->value->attributes as $attributeName) {
             $attributeValue = $this->entity->get($attributeName);
-            if ($attributeValue instanceof AbstractEntity) {
+            if ($attributeValue instanceof AbstractEntityWithId) {
                 $attributeValue = $attributeValue->getId();
             }
             $valores[] = "'$attributeName'='$attributeValue'";
@@ -165,7 +166,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
     {
         $uow                       = $this->em->getUnitOfWork();
         $scheduledEntityInsertions = $uow->getScheduledEntityInsertions();
-        /** @var $sei AbstractEntity */
+        /** @var $sei AbstractEntityWithId */
         foreach ($scheduledEntityInsertions as $sei) {
             if ($sei !== $this->entity && $sei instanceof $this->entityClass) {
                 $estaDuplicado = false;
@@ -215,7 +216,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
         foreach ($this->value->attributes as $attributeName) {
             $attributeValue = $this->entity->get($attributeName);
 
-            if ($attributeValue instanceof AbstractEntity) {
+            if ($attributeValue instanceof AbstractEntityWithId) {
                 if (!$this->em->getRepository(\App\Entity\AbstractEntity::getClass($attributeValue))->find(
                     $attributeValue->getId()
                 )

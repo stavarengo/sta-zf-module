@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\DateType;
 use Doctrine\DBAL\Types\TimeType;
 use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
+use Sta\Entity\AbstractEntityWithoutId;
 use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\ServiceManager;
 
@@ -204,6 +205,12 @@ class Converter
 	{
 		$options = $this->getOptions();
 		$depth = $options->getDepth();
+		
+		if ($entity instanceof AbstractEntityWithoutId) {
+			// A entidade não tem id, então precisamo renderizar ela por completo
+			$depth++;
+		}
+		
 		if ($depth > 0) {
             $optionsArray = $options->toArray();
             $optionsArray['depth'] = --$depth;

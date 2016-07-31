@@ -1,9 +1,7 @@
 <?php
 namespace Sta\Entity;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
-use Sta\Entity\Exception\InvalidArgument;
 
 /**
  * Classe base para todas as entidades.
@@ -13,7 +11,7 @@ use Sta\Entity\Exception\InvalidArgument;
  * @author: Stavarengo
  * @ORM\MappedSuperclass
  */
-abstract class AbstractEntityWithSequentialId extends AbstractEntityWithoutId
+abstract class AbstractEntityWithSequentialId extends AbstractEntityWithId
 {
 
     /**
@@ -36,6 +34,11 @@ abstract class AbstractEntityWithSequentialId extends AbstractEntityWithoutId
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = (int)$id;
     }
 
 }

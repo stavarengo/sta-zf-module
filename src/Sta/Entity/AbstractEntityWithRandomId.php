@@ -16,7 +16,7 @@ abstract class AbstractEntityWithRandomId extends AbstractEntity implements Enti
      * sua base de dados com as entidades do WebService.
      *
      * @ORM\Id
-     * @ORM\Column(type="string", length=13, nullable=false)
+     * @ORM\Column(type="string", length=15, nullable=false)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="\Sta\Entity\Id\RandomIdGenerator")
      * @var string

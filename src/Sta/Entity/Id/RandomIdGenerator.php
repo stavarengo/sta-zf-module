@@ -27,6 +27,6 @@ class RandomIdGenerator extends \Doctrine\ORM\Id\AbstractIdGenerator
 
     public static function generateNewId()
     {
-        return uniqid();
+        return uniqid() . bin2hex(openssl_random_pseudo_bytes(1));
     }
 }

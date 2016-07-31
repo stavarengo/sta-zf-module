@@ -44,7 +44,7 @@ class NotNull extends AbstractValidator
 		foreach ($value->attributes as $attributeName) {
 			$attributeValue = $entity->get($attributeName);
 			if ($attributeValue === null) {
-				$this->entityName = \App\Entity\AbstractEntity::getClass($entity);
+				$this->entityName = \App\Entity\AbstractEntity::class;
 				$this->field      = $attributeName;
 				$this->error(self::NOT_NULL_FIELD);
 				return false;

@@ -4,14 +4,9 @@ namespace Sta\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Classe base para todas as entidades.
- *
- * Uma entidade é um conjunto de informações que podem ser idenficado por um ID.
- *
- * @author: Stavarengo
  * @ORM\MappedSuperclass
  */
-abstract class AbstractEntityWithSequentialId extends AbstractEntityWithId
+abstract class AbstractEntityWithSequentialId extends AbstractEntity implements EntityWithIdInterface
 {
 
     /**
@@ -27,10 +22,6 @@ abstract class AbstractEntityWithSequentialId extends AbstractEntityWithId
      */
     protected $id;
 
-    /**
-     * @ignore
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
@@ -39,6 +30,8 @@ abstract class AbstractEntityWithSequentialId extends AbstractEntityWithId
     public function setId($id)
     {
         $this->id = (int)$id;
+
+        return $this;
     }
 
 }

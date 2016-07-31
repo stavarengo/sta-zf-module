@@ -2,13 +2,14 @@
 namespace Sta\Entity\Validator;
 
 use Sta\Entity\AbstractEntity;
+use Sta\Entity\EntityInterface;
 
 class NotNullValue
 {
 
 	/**
 	 * A entidade que deseja verificar os campos obrigatórios.
-	 * @var AbstractEntity
+	 * @var EntityInterface
 	 */
 	public $entity;
 	/**

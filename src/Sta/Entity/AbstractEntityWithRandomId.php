@@ -1,19 +1,12 @@
 <?php
 namespace Sta\Entity;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
-use Sta\Entity\Exception\InvalidArgument;
 
 /**
- * Classe base para todas as entidades.
- *
- * Uma entidade é um conjunto de informações que podem ser idenficado por um ID.
- *
- * @author: Stavarengo
  * @ORM\MappedSuperclass
  */
-abstract class AbstractEntityWithRandomId extends AbstractEntityWithId
+abstract class AbstractEntityWithRandomId extends AbstractEntity implements EntityWithIdInterface
 {
 
     /**
@@ -40,11 +33,15 @@ abstract class AbstractEntityWithRandomId extends AbstractEntityWithId
     }
 
     /**
-     * @param int $id
+     * @param $id
+     *
+     * @return $this
      */
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     public static function generateNewId()

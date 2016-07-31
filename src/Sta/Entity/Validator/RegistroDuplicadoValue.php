@@ -2,14 +2,14 @@
 namespace Sta\Entity\Validator;
 
 use Sta\Entity\AbstractEntity;
-use Sta\Entity\AbstractEntityWithId;
+use Sta\Entity\EntityWithIdInterface;
 
 class RegistroDuplicadoValue
 {
 
 	/**
 	 * A entidade que deseja verificar se está duplciada.
-	 * @var AbstractEntityWithId
+	 * @var EntityWithIdInterface
 	 */
 	public $entity;
 	/**
@@ -20,10 +20,10 @@ class RegistroDuplicadoValue
 	public $attributes;
 
 	/**
-	 * @param AbstractEntityWithId $entity
+	 * @param EntityWithIdInterface $entity
 	 * @param string[]|string $attributes
 	 */
-	function __construct(AbstractEntityWithId $entity, $attributes)
+	function __construct(EntityWithIdInterface $entity, $attributes)
 	{
 		$this->attributes = (array)$attributes;
 		$this->entity     = $entity;

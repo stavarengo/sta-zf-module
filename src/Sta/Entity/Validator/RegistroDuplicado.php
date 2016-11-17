@@ -134,7 +134,7 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
             }
             $valores[] = "'$attributeName'='$attributeValue'";
         }
-        $this->valores = implode(', ', $valores);
+        $this->valores = implode(' AND ', $valores);
 
         return $this->chekInsertionScheduled() && $this->checkDatabase();
 

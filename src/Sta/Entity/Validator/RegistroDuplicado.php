@@ -89,10 +89,23 @@ class RegistroDuplicado extends \Zend\Validator\AbstractValidator
             throw new \Sta\Entity\Validator\InvalidArgument();
         }
 
+        $this->value       = $value;
+
+        $allFieldsAreNull = true;
+        foreach ($this->value->attributes as $attributeName) {
+            $attributeValue = $this->value->entity->get($attributeName);
+            if ($attributeValue !== null) {
+                $allFieldsAreNull = false;
+                break;
+            }
+        }
+        if ($allFieldsAreNull) {
+            return true;
+        }
+
         /** @var Env $env */
         $env               = \Sta\Module::getServiceLocator()->get('App\Env');
         $this->em          = \Sta\Module::getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        $this->value       = $value;
         $this->entity      = $value->entity;
         $this->entityClass = \App\Entity\AbstractEntity::getClass($this->entity);
         $this->entityName  = $this->entityClass;

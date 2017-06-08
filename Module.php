@@ -5,6 +5,7 @@ namespace Sta;
 use Doctrine\DBAL\Types\DecimalType;
 use Doctrine\DBAL\Types\Type;
 use Sta\Dbal\Types\StaDecimalType;
+use Sta\Dbal\Types\UriType;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\ModuleRouteListener;
@@ -102,6 +103,7 @@ class Module implements Feature\AutoloaderProviderInterface,
 			if (!\Doctrine\DBAL\Types\Type::hasType(\Sta\Dbal\Types\PercentageType::PERCENTAGE)) {
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\PercentageType::PERCENTAGE, 'Sta\Dbal\Types\PercentageType');
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyType::MONEY, 'Sta\Dbal\Types\MoneyType');
+				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\UriType::URI, UriType::class);
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\DateTimeAlwaysUtcType::DATETIME_ALWAYS_UTC, \Sta\Dbal\Types\DateTimeAlwaysUtcType::class);
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\BigInt64BitsType::BIGINT_64BITS, \Sta\Dbal\Types\BigInt64BitsType::class);
 				\Doctrine\DBAL\Types\Type::addType(\Sta\Dbal\Types\MoneyPercentageType::MONEY_PERCENTAGE, 'Sta\Dbal\Types\MoneyPercentageType');

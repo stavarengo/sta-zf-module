@@ -47,4 +47,9 @@ class MoneyType extends \Doctrine\DBAL\Types\Type
 	{
 		return (null === $value) ? null : (float)$value;
 	}
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
 }

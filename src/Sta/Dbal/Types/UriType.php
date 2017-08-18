@@ -47,4 +47,9 @@ class UriType extends \Doctrine\DBAL\Types\Type
 	{
 		return (null === $value) ? null : new Uri($value);
 	}
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
 }

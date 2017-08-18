@@ -28,25 +28,26 @@ use GuzzleHttp\Psr7\Uri;
 class UriType extends \Doctrine\DBAL\Types\Type
 {
 
-	const URI = 'uri';
+    const URI = 'uri';
 
-	public function getName()
-	{
-		return self::URI;
-	}
+    public function getName()
+    {
+        return self::URI;
+    }
 
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
         if (!isset($fieldDeclaration['length'])) {
             $fieldDeclaration['length'] = 255;
         }
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
-	}
 
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return (null === $value) ? null : new Uri($value);
-	}
+        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        return (null === $value) ? null : new Uri($value);
+    }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {

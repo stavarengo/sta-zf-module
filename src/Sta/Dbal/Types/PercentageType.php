@@ -27,26 +27,27 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 class PercentageType extends \Doctrine\DBAL\Types\Type
 {
 
-	const PERCENTAGE = 'percentage';
+    const PERCENTAGE = 'percentage';
 
-	public function getName()
-	{
-		return self::PERCENTAGE;
-	}
+    public function getName()
+    {
+        return self::PERCENTAGE;
+    }
 
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
-		$fieldDeclaration['precision'] = (!isset($fieldDeclaration['precision']) || empty($fieldDeclaration['precision']))
-			? 18 : $fieldDeclaration['precision'];
-		$fieldDeclaration['scale']     = (!isset($fieldDeclaration['scale']) || empty($fieldDeclaration['scale']))
-			? 15 : $fieldDeclaration['scale'];
-		return $platform->getDecimalTypeDeclarationSQL($fieldDeclaration);
-	}
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        $fieldDeclaration['precision'] = (!isset($fieldDeclaration['precision']) || empty($fieldDeclaration['precision']))
+            ? 18 : $fieldDeclaration['precision'];
+        $fieldDeclaration['scale']     = (!isset($fieldDeclaration['scale']) || empty($fieldDeclaration['scale']))
+            ? 15 : $fieldDeclaration['scale'];
 
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return (null === $value) ? null : (float)$value;
-	}
+        return $platform->getDecimalTypeDeclarationSQL($fieldDeclaration);
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        return (null === $value) ? null : (float)$value;
+    }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {

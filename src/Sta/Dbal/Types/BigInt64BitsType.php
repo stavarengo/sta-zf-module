@@ -27,12 +27,12 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 class BigInt64BitsType extends \Doctrine\DBAL\Types\BigIntType
 {
 
-	const BIGINT_64BITS = 'bigint-64bits';
+    const BIGINT_64BITS = 'bigint-64bits';
 
-	public function getName()
-	{
-		return self::BIGINT_64BITS;
-	}
+    public function getName()
+    {
+        return self::BIGINT_64BITS;
+    }
 
     /**
      * {@inheritdoc}
@@ -47,6 +47,6 @@ class BigInt64BitsType extends \Doctrine\DBAL\Types\BigIntType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return (null === $value) ? null : (int) $value;
+        return (null === $value) ? null : (int)$value;
     }
 }

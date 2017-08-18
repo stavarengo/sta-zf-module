@@ -30,11 +30,6 @@ class DateTimeAlwaysUtcType extends \Doctrine\DBAL\Types\DateTimeType
 
     const DATETIME_ALWAYS_UTC = 'datetime_always_utc';
 
-    public function getName()
-    {
-        return self::DATETIME_ALWAYS_UTC;
-    }
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if ($value === null) {
@@ -78,6 +73,11 @@ class DateTimeAlwaysUtcType extends \Doctrine\DBAL\Types\DateTimeType
         }
 
         return $val;
+    }
+
+    public function getName()
+    {
+        return self::DATETIME_ALWAYS_UTC;
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform)

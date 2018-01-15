@@ -31,7 +31,7 @@ class GetRequestContent extends AbstractPlugin
         if ($autoDetectSource) {
             /** @var $contentType \Zend\Http\Header\ContentType */
             $contentType = $request->getHeader('ContentType');
-            if ($contentType->getMediaType() == 'multipart/form-data') {
+            if ($contentType && $contentType->getMediaType() == 'multipart/form-data') {
                 $data = $_POST;
                 if ($objectDecodeType == \Zend\Json\Json::TYPE_OBJECT) {
                     $data = (object)$data;

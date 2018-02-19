@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  *
  * @link      ${GITHUB_URL} Source code
  */
- 
+
 namespace Sta\Entity;
 
 use ZF\ApiProblem\Exception\ProblemExceptionInterface;
@@ -14,9 +14,16 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
     protected $code = 422;
 
     protected $validationMessages;
-    
+
     public function __construct(array $validationMessages, $message = null)
     {
+        if ($message === null && $validationMessages) {
+            $message = $validationMessages;
+            do {
+                $message = reset($message);
+            } while ($message && is_array($message));
+        }
+
         $message = ($message ? $message : 'Failed Validation');
 
         if (class_exists('\PHPUnit_Framework_Assert', false)) {
@@ -24,7 +31,7 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
         }
 
         parent::__construct($message, 422);
-        
+
         $this->validationMessages = $validationMessages;
     }
 
@@ -32,6 +39,7 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
     {
         $s = parent::__toString();
         $s .= "\n" . print_r($this->getAdditionalDetails(), true);
+
         return $s;
     }
 
@@ -40,7 +48,7 @@ class ValidationException extends \Sta\Exception implements ProblemExceptionInte
      */
     public function getAdditionalDetails()
     {
-        return  array('validation_messages' => $this->validationMessages);
+        return ['validation_messages' => $this->validationMessages];
     }
 
     /**

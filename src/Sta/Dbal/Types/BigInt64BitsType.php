@@ -27,7 +27,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 class BigInt64BitsType extends \Doctrine\DBAL\Types\BigIntType
 {
 
-    const BIGINT_64BITS = 'bigint-64bits';
+    const BIGINT_64BITS = 'bigint_64bits';
 
     public function getName()
     {

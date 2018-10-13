@@ -67,6 +67,11 @@ class Module implements Feature\AutoloaderProviderInterface,
 		$staConfig = $config['sta'];
 		if (isset($staConfig['php-settings'])) {
 			foreach ($config['sta']['php-settings'] as $name => $value) {
+			    if (php_sapi_name() == 'cli') {
+                    if ($name == 'session.cache_limiter' && headers_sent()) {
+                        continue;
+                    }
+                }
 				ini_set($name, $value);
 			}
 		}

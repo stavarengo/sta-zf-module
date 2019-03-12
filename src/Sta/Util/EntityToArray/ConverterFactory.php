@@ -1,33 +1,29 @@
 <?php
 
-namespace Sta\Util;
 
-use App\Env\Env;
+namespace Sta\Util\EntityToArray;
+
+
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\DateTimeTzType;
+use Doctrine\DBAL\Types\DateType;
+use Doctrine\DBAL\Types\TimeType;
+use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
+use Sta\Entity\AbstractEntity;
+use Sta\Entity\EntityInterface;
+use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * @author: Stavarengo
  */
-class GetConfiguredResponseFactory implements FactoryInterface
+class ConverterFactory implements FactoryInterface
 {
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return new GetConfiguredResponse($serviceLocator->get(Env::class));
-    }
-
     /**
      * Create an object
      *
@@ -42,6 +38,6 @@ class GetConfiguredResponseFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return $this->createService($container);
+        return new Converter($container->get('config'));
     }
 }

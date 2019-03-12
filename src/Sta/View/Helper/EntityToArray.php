@@ -28,7 +28,7 @@ class EntityToArray extends AbstractHelper implements ServiceLocatorAwareInterfa
 	 */
 	public function convert($entity, $options = array())
 	{
-		$entityToArray  = $this->getServiceLocator()->getServiceLocator()->get('Sta\Util\EntityToArray');
+		$entityToArray  = $this->getServiceLocator()->get('Sta\Util\EntityToArray');
 		return $entityToArray->convert($entity, $options);
 	}
 

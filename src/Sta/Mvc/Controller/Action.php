@@ -68,11 +68,6 @@ abstract class Action
 		return $this->getController()->params($param, $default);
 	}
 
-    public function getServiceLocator()
-    {
-        return $this->getController()->getServiceLocator();
-    }
-
     public function getRequest()
     {
         return $this->getController()->getRequest();
@@ -81,10 +76,5 @@ abstract class Action
     public function getResponse()
     {
         return $this->getController()->getResponse();
-    }
-
-    public function getEm()
-    {
-        return $this->getController()->getEntityManager();
     }
 }

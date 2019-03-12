@@ -19,7 +19,7 @@ class GetConfiguredResponse extends AbstractPlugin implements ServiceLocatorAwar
 	public function __invoke($statusCode, $body = null, array $responseHeaders = array())
 	{
 		/** @var $getConfiguredResponse \Sta\Util\GetConfiguredResponse */
-		$getConfiguredResponse = $this->getServiceLocator()->getServiceLocator()->get('Sta\Util\GetConfiguredResponse');
+		$getConfiguredResponse = $this->getServiceLocator()->get('Sta\Util\GetConfiguredResponse');
 		$controller            = $this->getController();
 		$response              = $controller->getResponse();
 		$format                = $controller->getParam('format');

@@ -8,11 +8,8 @@ use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\DateTimeTzType;
 use Doctrine\DBAL\Types\DateType;
 use Doctrine\DBAL\Types\TimeType;
-use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
 use Sta\Entity\EntityInterface;
-use Zend\Di\ServiceLocator;
-use Zend\ServiceManager\ServiceManager;
 
 /**
  * @author: Stavarengo
@@ -25,11 +22,6 @@ class Converter
 	 */
 	protected $em;
 	/**
-	 * @var \Zend\ServiceManager\ServiceManager
-	 */
-	protected $serviceLocator;
-
-	/**
 	 * @var \Zend\Stdlib\RequestInterface
 	 */
 	protected $request;
@@ -40,16 +32,29 @@ class Converter
 	protected $options;
 
     /**
-     * @param \Zend\ServiceManager\ServiceManager $serviceLocator
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * Converter constructor.
+     * @param array $config
+     */
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * @param \DateTime $dateTime
      * @param string $selector
      * @throws Exception\InvalidArgumentException
+     * @throws \Exception
      * @return mixed
      */
-    public static function convertDateTimeToStr(ServiceManager $serviceLocator, \DateTime $dateTime, $selector = 'datetime')
+    public static function convertDateTimeToStr(array $config, \DateTime $dateTime, $selector = 'datetime')
     {
 		$dateTime		 = clone $dateTime;
-        $config          = $serviceLocator->get('config');
         $dateTimeFormats = $config['web']['datetime'];
         $format = null;
         if ($selector == 'date') {
@@ -149,7 +154,6 @@ class Converter
 	
 	protected function _convertFieldValue($fieldValue, $fieldType)
 	{
-		$em              = $this->em;
 		$returnValue     = null;
 
 		if ($fieldValue !== null) {
@@ -167,7 +171,7 @@ class Converter
 //						$format = $em->getConnection()->getDatabasePlatform()->getDateTimeTzFormatString();
 					}
 					if ($selector !== null) {
-                        $returnValue = self::convertDateTimeToStr($this->getServiceLocator(), $fieldValue, $selector);
+                        $returnValue = self::convertDateTimeToStr($this->config, $fieldValue, $selector);
 					}
 				} else {
 					$returnValue = $this->_convertSubEntities($fieldValue);
@@ -236,14 +240,6 @@ class Converter
 	}
 
 	/**
-	 * @param \Zend\ServiceManager\ServiceManager $serviceLocator
-	 */
-	public function setServiceLocator(\Zend\ServiceManager\ServiceManager $serviceLocator)
-	{
-		$this->serviceLocator = $serviceLocator;
-	}
-
-	/**
 	 * @param \Zend\Stdlib\RequestInterface $request
 	 */
 	public function setRequest($request)
@@ -283,7 +279,7 @@ class Converter
         $noEntityName = false;
         $depth = 0;
             
-        $config = $this->getServiceLocator()->get('config');
+        $config = $this->config;
         if (isset($config['sta']['entityToArray-converter']['defaults']['noEntityName'])) {
             $noEntityName = $config['sta']['entityToArray-converter']['defaults']['noEntityName'];
         }

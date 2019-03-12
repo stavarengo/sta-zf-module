@@ -12,15 +12,23 @@ use Zend\Stdlib\DispatchableInterface;
 /**
  * @author: Stavarengo
  */
-class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInterface
+class PopulateEntityFromArray implements PluginInterface
 {
+    /**
+     * @var array
+     */
+    protected $config;
 
-	/**
-	 * @var ServiceLocatorInterface
-	 */
-	public $serviceManager;
+    /**
+     * PopulateEntityFromArray constructor.
+     * @param array $config
+     */
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
 
-	public function __invoke(array $data, AbstractEntity $entity, array $options = array())
+    public function __invoke(array $data, AbstractEntity $entity, array $options = array())
 	{
 		$this->populate($data, $entity, $options);
 	}
@@ -54,30 +62,6 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
 	 */
 	public function getController()
 	{
-	}
-
-	/**
-	 * Set service locator
-	 *
-	 * @param ServiceLocatorInterface $serviceLocator
-	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-	{
-        if (method_exists($serviceLocator, 'getServiceLocator')) {
-            $serviceLocator = $serviceLocator->getServiceLocator();
-        }
-		$this->serviceManager = $serviceLocator;
-	}
-
-	/**
-	 * Get service locator
-	 *
-	 * @return ServiceLocatorInterface
-	 * @return \Zend\ServiceManager\ServiceLocatorInterface
-	 */
-	public function getServiceLocator()
-	{
-		return $this->serviceManager;
 	}
 
 	/**
@@ -135,7 +119,7 @@ class PopulateEntityFromArray implements PluginInterface, ServiceLocatorAwareInt
                 $originalValue = $value;
                 $value = self::strToDateTime($this->getServiceLocator(), $value, $fieldType);
                 if (!$value) {
-                    $config      = $this->getServiceLocator()->get('config');
+                    $config      = $this->config;
                     $fieldFormat = $config['web']['datetime'][$fieldType];
                     $agora       = new \DateTime('now');
                     

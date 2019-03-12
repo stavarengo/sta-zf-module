@@ -8,21 +8,20 @@ use App\Env\Env;
  */
 class GetConfiguredResponse 
 {
+    /**
+     * @var Env
+     */
+    private $env;
 
-	/**
-	 * @var \Zend\ServiceManager\ServiceLocatorInterface
-	 */
-	private $serviceLocator;
-
-	/**
+    /**
 	 * GetConfiguredResponse constructor.
 	 *
 	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
 	 */
-	public function __construct(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
+	public function __construct(Env $env)
 	{
-		$this->serviceLocator = $serviceLocator;
-	}
+        $this->env = $env;
+    }
 
 
 	/**
@@ -64,7 +63,7 @@ class GetConfiguredResponse
 		$format = 'json', array $responseHeaders = array()
 	) {
 		/** @var Env $env */
-		$env     = $this->getServiceLocator()->get('App\Env');
+		$env     = $this->env;
 		$isDebug = $env->isDev();
 		$headers = $response->getHeaders();
 		if ($statusCode >= 200 && $statusCode <= 299) {
@@ -146,25 +145,5 @@ class GetConfiguredResponse
 				}
 			}
 		}
-	}
-
-	/**
-	 * Set service locator
-	 *
-	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 */
-	public function setServiceLocator(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
-	{
-		$this->serviceLocator = $serviceLocator;
-	}
-
-	/**
-	 * Get service locator
-	 *
-	 * @return \Zend\ServiceManager\ServiceLocatorInterface
-	 */
-	public function getServiceLocator()
-	{
-		return $this->serviceLocator;
 	}
 }

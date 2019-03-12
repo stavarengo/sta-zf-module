@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Type;
 use Sta\Dbal\Types\StaDecimalType;
 use Sta\Dbal\Types\UriType;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManager;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -62,7 +63,8 @@ class Module implements Feature\AutoloaderProviderInterface,
 	 */
 	public function onBootstrap(EventInterface $e)
 	{
-		$sm     = $e->getApplication()->getServiceManager();
+        /** @var MvcEvent $e */
+        $sm     = $e->getApplication()->getServiceManager();
 		$config = $sm->get('config');
 		$staConfig = $config['sta'];
 		if (isset($staConfig['php-settings'])) {
@@ -76,12 +78,14 @@ class Module implements Feature\AutoloaderProviderInterface,
 			}
 		}
 
-		$e->getApplication()->getEventManager()->attach(array(MvcEvent::EVENT_DISPATCH_ERROR, MvcEvent::EVENT_RENDER_ERROR), function(MvcEvent $e) {
-			$e->getViewModel()->ocorreuUmErro = true;
-			if (method_exists($e->getResponse(), 'getHeaders')) {
-				$e->getResponse()->getHeaders()->addHeaderLine('Content-type', 'text/html; charset=utf-8');
-			}
-		});
+        $errorCallback = function(MvcEvent $e) {
+            $e->getViewModel()->ocorreuUmErro = true;
+            if (method_exists($e->getResponse(), 'getHeaders')) {
+                $e->getResponse()->getHeaders()->addHeaderLine('Content-type', 'text/html; charset=utf-8');
+            }
+        };
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, $errorCallback);
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_RENDER_ERROR, $errorCallback);
 
 		// Esta função habilita o uso de layouts específicos por módulos.
 		// Se dentro do array de configuração existir uma entrada 'modules_layouts' e dentro desta entrada exstir

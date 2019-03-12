@@ -5,12 +5,14 @@ return array(
 	'controller_plugins' => array(
 		'invokables' => array(
 			'entityToArray' => 'Sta\Mvc\Controller\Plugin\EntityToArray',
-			'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
 			'rangeUnit' => 'Sta\Mvc\Controller\Plugin\RangeUnit',
 			'getConfiguredResponse' => 'Sta\Mvc\Controller\Plugin\GetConfiguredResponse',
 			'getRequestContent' => 'Sta\Mvc\Controller\Plugin\GetRequestContent',
 			'cache' => 'Sta\Mvc\Controller\Plugin\Cache',
 		),
+        'factories' => array(
+            'populateEntityFromArray' => \Sta\Util\PopulateEntityFromArrayFactory::class,
+        )
 	),
 	'view_helpers' => array(
 		'invokables' => array(
@@ -18,18 +20,20 @@ return array(
 			'getEntityManager' => __NAMESPACE__ . '\View\Helper\GetEntityManager',
 			'getServiceManager' => __NAMESPACE__ . '\View\Helper\GetServiceManager',
             'entityToArray' => 'Sta\View\Helper\EntityToArray',
-            'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
             'shortNumber' => 'Sta\View\Helper\ShortNumber',
 		),
-	),
+        'factories' => array(
+            'populateEntityFromArray' => \Sta\Util\PopulateEntityFromArrayFactory::class,
+        ),
+    ),
 	'service_manager' => array(
 		'invokables' => array(
 			'Sta\Util\MobileDetect' => 'Sta\Util\MobileDetect',
-            'populateEntityFromArray' => 'Sta\Util\PopulateEntityFromArray',
 		),
 		'factories' => array(
 			'Sta\Util\GetConfiguredResponse' => 'Sta\Util\GetConfiguredResponseFactory', 
-			'Sta\Util\EntityToArray' => 'Sta\Util\EntityToArray\Factory', 
+			'Sta\Util\EntityToArray' => 'Sta\Util\EntityToArray\Factory',
+            'populateEntityFromArray' => \Sta\Util\PopulateEntityFromArrayFactory::class,
 		),
 		'aliases' => array(
 			'Em' => 'Doctrine\ORM\EntityManager',

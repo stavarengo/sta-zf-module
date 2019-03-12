@@ -30,14 +30,6 @@ use Sta\Entity\AbstractEntity;
 class AbstractActionController extends \Zend\Mvc\Controller\AbstractActionController
 {
 
-	/**
-	 * @return EntityManager
-	 */
-	public function getEntityManager()
-	{
-		return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-	}
-
 	public function getParam($param, $default = null)
 	{
 		$def = '____nao-existe-' . time() . '____';
@@ -49,10 +41,4 @@ class AbstractActionController extends \Zend\Mvc\Controller\AbstractActionContro
 		}
 		return ($value === $def ? $default : $value);
 	}
-
-	public function getServiceLocator()
-	{
-		return $this->serviceLocator;
-	}
-
 }

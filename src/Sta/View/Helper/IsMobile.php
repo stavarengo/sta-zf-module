@@ -1,48 +1,35 @@
 <?php
 namespace Sta\View\Helper;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use App\Env\Env;
 use Zend\View\Helper\AbstractHelper;
 
-class IsMobile extends AbstractHelper implements ServiceLocatorAwareInterface
+class IsMobile extends AbstractHelper
 {
-
-	/**
-	 * @var ServiceLocatorAwareInterface
-	 */
-	private $serviceLocator;
-
 	/**
 	 * @var bool
 	 */
 	private $isMobile = null;
 
-	public function __invoke()
+    /**
+     * @var Env
+     */
+	private $env;
+
+    /**
+     * IsMobile constructor.
+     * @param Env $env
+     */
+    public function __construct(Env $env)
+    {
+        $this->env = $env;
+    }
+
+    public function __invoke()
 	{
-		if ($this->isMobile === null && !($this->isMobile = $this->getServiceLocator()->get('isDebug')->is())) {
+		if ($this->isMobile === null && !($this->isMobile = $this->env->isDev())) {
 			$this->isMobile = \App\MobileDetect\MobileDetect::getInstance()->isMobile();
 		}
 		return $this->isMobile;
-	}
-
-	/**
-	 * Set service locator
-	 *
-	 * @param ServiceLocatorInterface $serviceLocator
-	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-	{
-		$this->serviceLocator = $serviceLocator;
-	}
-
-	/**
-	 * Get service locator
-	 *
-	 * @return ServiceLocatorInterface
-	 */
-	public function getServiceLocator()
-	{
-		return $this->serviceLocator;
 	}
 }

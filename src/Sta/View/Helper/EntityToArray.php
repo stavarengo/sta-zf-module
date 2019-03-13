@@ -3,61 +3,46 @@
 namespace Sta\View\Helper;
 
 use Sta\Entity\AbstractEntity;
-use Sta\Util\EntityToArray as EntityToArrayUtil;
 use Web\View\Helper\AbstractHelper;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * @author: Stavarengo
  */
-class EntityToArray extends AbstractHelper implements ServiceLocatorAwareInterface
+class EntityToArray extends AbstractHelper
 {
+    /**
+     * @var \Sta\Util\EntityToArray
+     */
+    protected $entityToArray;
 
     /**
-     * @var \Zend\ServiceManager\ServiceLocatorInterface
+     * EntityToArray constructor.
+     * @param \Sta\Util\EntityToArray $entityToArray
      */
-    protected $serviceLocator;
-    
-	/**
-	 * @param AbstractEntity|AbstractEntity[] $entity
-	 *
-	 * @param array|\Sta\Util\EntityToArray\ConverterOptions $options
-	 *        Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
-	 *
-	 * @return array
-	 */
-	public function convert($entity, $options = array())
-	{
-		$entityToArray  = $this->getServiceLocator()->get('Sta\Util\EntityToArray');
-		return $entityToArray->convert($entity, $options);
-	}
-
-	public function __invoke($entity = null, array $options = array())
-	{
-		if ($entity !== null) {
-			return $this->convert($entity, $options);
-		} else {
-			return $this;
-		}
-	}
-
-    /**
-     * Set service locator
-     *
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
+    public function __construct(\Sta\Util\EntityToArray $entityToArray)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->entityToArray = $entityToArray;
     }
 
     /**
-     * Get service locator
+     * @param AbstractEntity|AbstractEntity[] $entity
      *
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     * @param array|\Sta\Util\EntityToArray\ConverterOptions $options
+     *        Veja as opções válidas em {@link \Sta\Util\EntityToArray::_convert()}
+     *
+     * @return array
      */
-    public function getServiceLocator()
+    public function convert($entity, $options = array())
     {
-        return $this->serviceLocator;
+        return $this->entityToArray->convert($entity, $options);
+    }
+
+    public function __invoke($entity = null, array $options = array())
+    {
+        if ($entity !== null) {
+            return $this->convert($entity, $options);
+        } else {
+            return $this;
+        }
     }
 }

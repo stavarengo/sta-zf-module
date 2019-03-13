@@ -5,7 +5,6 @@ namespace Sta\Util;
 use Doctrine\ORM\EntityManager;
 use Sta\Entity\AbstractEntity;
 use Zend\Mvc\Controller\Plugin\PluginInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\DispatchableInterface;
 

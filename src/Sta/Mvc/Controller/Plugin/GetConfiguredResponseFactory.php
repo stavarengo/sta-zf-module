@@ -1,9 +1,10 @@
 <?php
-namespace Sta\Util;
 
+namespace Sta\Mvc\Controller\Plugin;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
@@ -11,9 +12,8 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 /**
  * @author: Stavarengo
  */
-class PopulateEntityFromArrayFactory implements FactoryInterface
+class GetConfiguredResponseFactory implements FactoryInterface
 {
-
     /**
      * Create an object
      *
@@ -28,6 +28,6 @@ class PopulateEntityFromArrayFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new PopulateEntityFromArray($container->get('config'));
+        return new GetConfiguredResponse($container->get(\Sta\Util\GetConfiguredResponse::class));
     }
 }

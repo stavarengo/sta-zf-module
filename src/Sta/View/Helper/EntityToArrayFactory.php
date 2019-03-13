@@ -1,6 +1,6 @@
 <?php
-namespace Sta\Util;
 
+namespace Sta\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
@@ -11,9 +11,8 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 /**
  * @author: Stavarengo
  */
-class PopulateEntityFromArrayFactory implements FactoryInterface
+class EntityToArrayFactory implements FactoryInterface
 {
-
     /**
      * Create an object
      *
@@ -28,6 +27,6 @@ class PopulateEntityFromArrayFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new PopulateEntityFromArray($container->get('config'));
+        return new EntityToArray($container->get(\Sta\Util\EntityToArray::class));
     }
 }

@@ -6,23 +6,23 @@ return array(
 		'invokables' => array(
 			'entityToArray' => 'Sta\Mvc\Controller\Plugin\EntityToArray',
 			'rangeUnit' => 'Sta\Mvc\Controller\Plugin\RangeUnit',
-			'getConfiguredResponse' => 'Sta\Mvc\Controller\Plugin\GetConfiguredResponse',
 			'getRequestContent' => 'Sta\Mvc\Controller\Plugin\GetRequestContent',
 			'cache' => 'Sta\Mvc\Controller\Plugin\Cache',
 		),
         'factories' => array(
+			'getConfiguredResponse' => \Sta\Mvc\Controller\Plugin\GetConfiguredResponseFactory::class,
             'populateEntityFromArray' => \Sta\Util\PopulateEntityFromArrayFactory::class,
         )
 	),
 	'view_helpers' => array(
 		'invokables' => array(
-			'isMobile' => __NAMESPACE__ . '\View\Helper\IsMobile',
 			'getEntityManager' => __NAMESPACE__ . '\View\Helper\GetEntityManager',
 			'getServiceManager' => __NAMESPACE__ . '\View\Helper\GetServiceManager',
-            'entityToArray' => 'Sta\View\Helper\EntityToArray',
             'shortNumber' => 'Sta\View\Helper\ShortNumber',
 		),
         'factories' => array(
+			'isMobile' => \Sta\View\Helper\IsMobileFactory::class,
+            'entityToArray' => \Sta\View\Helper\EntityToArrayFactory::class,
             'populateEntityFromArray' => \Sta\Util\PopulateEntityFromArrayFactory::class,
         ),
     ),

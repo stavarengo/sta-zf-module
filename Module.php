@@ -91,8 +91,8 @@ class Module implements Feature\AutoloaderProviderInterface,
 		// Se dentro do array de configuração existir uma entrada 'modules_layouts' e dentro desta entrada exstir
 		// uma entrada com o memo nome do namespace do módulo em execução então o arquivo especificado será usado como layout.
 		// Ex: array('modules_layouts' => 'Web' => 'caminho para o arquivo de layout'));
-		$e->getApplication()->getEventManager()->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
-			/** @var $controller \Zend\Mvc\Controller\AbstractActionController */
+		$e->getApplication()->getEventManager()->getSharedManager()->attach(\Zend\Mvc\Controller\AbstractController::class, 'dispatch', function(MvcEvent $e) {
+			/** @var $controller \Zend\Mvc\Controller\AbstractController */
 			$controller      = $e->getTarget();
 			$controllerClass = get_class($controller);
 			$moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
